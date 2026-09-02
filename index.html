@@ -903,6 +903,18 @@
   <div id="weakSpotSlot"></div>
   <!-- 今日排程功能已移除，改為待辦事項＋習慣打卡 -->
 
+  <!-- 今日法條：切換科目選單 -->
+  <div class="checkin-scrim" id="lawSubjectScrim" onclick="closeLawSubjectSheet()"></div>
+  <div class="checkin-sheet" id="lawSubjectSheet">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+      <h3>今天想看哪一科的法條？</h3>
+      <button onclick="closeLawSubjectSheet()" style="background:none; border:none; font-size:22px; color:var(--ink-3); line-height:1; width:44px; height:44px; display:flex; align-items:center; justify-content:center; margin:-10px -10px 0 0; flex-shrink:0;">✕</button>
+    </div>
+    <p style="font-size:12px; color:var(--ink-3); margin-bottom:14px; line-height:1.6;">只影響今天，明天會自動恢復成你原本的每週排程。</p>
+    <div id="lawSubjectOptionsWrap" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;"></div>
+    <button class="btn-primary" style="background:var(--card); color:var(--ink-2); border:1px solid var(--line);" onclick="resetLawSubjectToAuto()">🔄 恢復依星期自動</button>
+  </div>
+
   <div class="shield-row" id="shieldRow">
     <span>連續紀錄保護</span>
     <span class="shields" id="shieldIcons">· 讀取中</span>
@@ -6477,7 +6489,7 @@ const OVERLAY_IDS_BY_PRIORITY = [
   'essayResultView', 'essayWriteView', 'essayListView',
   'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'linksView',
   'timelog', 'backupView', 'quizPicker',
-  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addFreeEntrySheet', 'addLinkSheet',
+  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
   'drawer'
 ];
 const OVERLAY_SCRIM_MAP = {
@@ -6490,6 +6502,7 @@ const OVERLAY_SCRIM_MAP = {
   addSubtaskSheet: 'addSubtaskScrim',
   addCustomCheckinSheet: 'addCustomCheckinScrim',
   addFreeEntrySheet: 'addFreeEntryScrim',
+  lawSubjectSheet: 'lawSubjectScrim',
   addLinkSheet: 'addLinkScrim',
   editEntrySheet: 'editEntryScrim',
   drawer: 'scrim'
@@ -7588,7 +7601,7 @@ function getAllLawEntries(){
   return entries;
 }
 
-/* 依照使用者每週安排的主科，篩選今日法條的題庫範圍 */
+/* 依照使用者每週安排的主科，篩選今日法條的題庫範圍；也支援臨時手動覆蓋（只影響今天） */
 const WEEKDAY_SUBJECT_MAP = {
   0: { subjects: null, label: '週日・補進度／考古題' },
   1: { subjects: ['民法'], label: '週一主科・民法' },
@@ -7598,14 +7611,61 @@ const WEEKDAY_SUBJECT_MAP = {
   5: { subjects: ['憲法', '行政法'], label: '週五主科・公法（憲法／行政法）' },
   6: { subjects: ['公司法'], label: '週六主科・商法（公司法）' },
 };
-function getTodaySubjectPool(){
+const LAW_SUBJECT_OPTIONS = ['民法', '民事訴訟法', '刑法', '刑事訴訟法', '憲法', '行政法', '公司法'];
+
+async function loadLawSubjectOverride(){
+  try {
+    const r = await window.storage.get('dailyLawOverride', false);
+    if(!r) return null;
+    const obj = JSON.parse(r.value);
+    if(obj.date !== todayKey()) return null; // 換日就自動失效，不用手動清
+    return obj.subject;
+  } catch(e){
+    return null;
+  }
+}
+async function saveLawSubjectOverride(subject){
+  try { await window.storage.set('dailyLawOverride', JSON.stringify({ date: todayKey(), subject }), false); } catch(e){}
+}
+async function clearLawSubjectOverride(){
+  try { await window.storage.delete('dailyLawOverride', false); } catch(e){}
+}
+
+async function getTodaySubjectPool(){
+  const all = getAllLawEntries();
+  const override = await loadLawSubjectOverride();
+  if(override){
+    const filtered = all.filter(e => (e.subject || '').includes(override));
+    return { pool: filtered.length ? filtered : all, conf: { label: `今天手動切換・${override}` } };
+  }
   const day = new Date().getDay();
   const conf = WEEKDAY_SUBJECT_MAP[day];
-  const all = getAllLawEntries();
   if(!conf || !conf.subjects) return { pool: all, conf };
   const filtered = all.filter(e => conf.subjects.some(s => (e.subject || '').includes(s)));
   // 該科目目前題庫裡還沒有法條時，退回全部法條，避免今日法條整個消失
   return { pool: filtered.length ? filtered : all, conf };
+}
+
+function openLawSubjectSheet(){
+  document.getElementById('lawSubjectOptionsWrap').innerHTML = LAW_SUBJECT_OPTIONS.map(s =>
+    `<div class="checkin-chip" onclick="pickLawSubject('${s}')">${s}</div>`
+  ).join('');
+  document.getElementById('lawSubjectSheet').classList.add('open');
+  document.getElementById('lawSubjectScrim').classList.add('open');
+}
+function closeLawSubjectSheet(){
+  document.getElementById('lawSubjectSheet').classList.remove('open');
+  document.getElementById('lawSubjectScrim').classList.remove('open');
+}
+async function pickLawSubject(subject){
+  await saveLawSubjectOverride(subject);
+  closeLawSubjectSheet();
+  await renderDailyLaw(true);
+}
+async function resetLawSubjectToAuto(){
+  await clearLawSubjectOverride();
+  closeLawSubjectSheet();
+  await renderDailyLaw(true);
 }
 
 let dailyLawEntry = null;
@@ -7613,7 +7673,7 @@ let dailyLawViewCount = 0;
 async function renderDailyLaw(pickNew){
   const slot = document.getElementById('dailyLawSlot');
   if(!slot) return;
-  const { pool, conf } = getTodaySubjectPool();
+  const { pool, conf } = await getTodaySubjectPool();
   if(!pool.length){
     slot.innerHTML = '';
     return;
@@ -7633,7 +7693,10 @@ async function renderDailyLaw(pickNew){
     <div class="law-widget">
       <div class="law-widget-label">
         <span>📜 ${conf ? conf.label : '今日法條'}</span>
-        <span class="law-refresh" onclick="renderDailyLaw(true)">🔀 換一條</span>
+        <span>
+          <span class="law-refresh" onclick="openLawSubjectSheet()">📚 切換科目</span>
+          <span class="law-refresh" onclick="renderDailyLaw(true)" style="margin-left:10px;">🔀 換一條</span>
+        </span>
       </div>
       <div class="law-header-row">
         ${dailyLawEntry.subject ? `<span class="law-subject-tag">${dailyLawEntry.subject}</span>` : ''}
