@@ -310,6 +310,52 @@
   .home-timeline-card .htc-t2 { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 3px; line-height: 1.5; }
   .home-timeline-card .htc-arrow { font-size: 18px; color: var(--gold); flex-shrink: 0; }
 
+  /* ---------- 首頁：成就與獎勵入口卡 ---------- */
+  .home-achieve-card {
+    margin: 4px 24px 16px; background: linear-gradient(135deg, #5B3A8E, #2E1F4E);
+    border-radius: 18px; padding: 16px 18px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .home-achieve-card .htc-icon { font-size: 24px; flex-shrink: 0; }
+  .home-achieve-card .htc-txt { flex: 1; min-width: 0; }
+  .home-achieve-card .htc-t1 { font-size: 15px; font-weight: 800; color: #fff; }
+  .home-achieve-card .htc-t2 { font-size: 11px; color: rgba(255,255,255,.75); margin-top: 3px; line-height: 1.5; }
+  .home-achieve-card .htc-arrow { font-size: 18px; color: var(--gold); flex-shrink: 0; }
+
+  /* ---------- 成就畫面：分頁 ---------- */
+  .achieve-tabs { display: flex; gap: 8px; padding: 14px 16px 4px; }
+  .achieve-tabs button {
+    flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); font-size: 13px; font-weight: 800; color: var(--ink-2);
+  }
+  .achieve-tabs button.active { background: #5B3A8E; color: #fff; border-color: #5B3A8E; }
+
+  .badge-section-title { font-size: 11.5px; font-weight: 800; color: var(--ink-3); letter-spacing: .04em; margin: 18px 4px 10px; }
+  .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 4px; }
+  .badge-cell {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px 8px; text-align: center;
+  }
+  .badge-cell.locked { opacity: .45; }
+  .badge-cell .b-icon { font-size: 28px; margin-bottom: 6px; }
+  .badge-cell.locked .b-icon { filter: grayscale(1); }
+  .badge-cell .b-name { font-size: 11.5px; font-weight: 800; color: var(--ink); line-height: 1.4; }
+  .badge-cell .b-req { font-size: 10px; color: var(--ink-3); margin-top: 4px; line-height: 1.4; }
+
+  .voucher-item {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  }
+  .voucher-item.used { opacity: .45; }
+  .voucher-item .v-icon { font-size: 24px; flex-shrink: 0; }
+  .voucher-item .v-txt { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+  .voucher-item.used .v-txt { text-decoration: line-through; color: var(--ink-3); }
+  .voucher-item .v-btn {
+    flex-shrink: 0; background: #5B3A8E; color: #fff; border: none; border-radius: 10px;
+    padding: 8px 14px; font-size: 12px; font-weight: 800;
+  }
+  .voucher-item .v-used-label { flex-shrink: 0; font-size: 11px; color: var(--ink-3); font-weight: 700; }
+
   /* ---------- Drawer menu ---------- */
   .scrim {
     position: fixed; inset: 0; background: rgba(20,20,18,.35);
@@ -840,6 +886,15 @@
     <div class="htc-arrow">›</div>
   </div>
 
+  <div class="home-achieve-card" onclick="openAchievements()">
+    <div class="htc-icon">🏆</div>
+    <div class="htc-txt">
+      <div class="htc-t1">成就與獎勵</div>
+      <div class="htc-t2" id="homeAchieveSummary">徽章收藏牆・娛樂兌換券</div>
+    </div>
+    <div class="htc-arrow">›</div>
+  </div>
+
   <div id="homeHabitSlot"></div>
   <div id="homeTodoSlot"></div>
 
@@ -880,6 +935,7 @@
     <div class="drawer-item minor" onclick="openEssayList()"><div class="ic">✍️</div><div class="txt"><div class="t1">申論練習</div><div class="t2">限時作答</div></div></div>
     <div class="drawer-item minor" onclick="openTodos()"><div class="ic">✅</div><div class="txt"><div class="t1">待辦事項</div><div class="t2" id="todosMenuSub">到期日／優先度</div></div></div>
     <div class="drawer-item minor" onclick="openHabits()"><div class="ic">🔥</div><div class="txt"><div class="t1">習慣打卡</div><div class="t2" id="habitsMenuSub">自訂清單＋連續天數</div></div></div>
+    <div class="drawer-item minor" onclick="openAchievements()"><div class="ic">🏆</div><div class="txt"><div class="t1">成就與獎勵</div><div class="t2">徽章收藏牆・娛樂兌換券</div></div></div>
     <div class="drawer-item minor" onclick="openCustomCheckinManager()"><div class="ic">🛠️</div><div class="txt"><div class="t1">自訂打卡按鈕</div><div class="t2">新增專屬於你的快速打卡</div></div></div>
 
     <div class="drawer-section-label">其他</div>
@@ -1155,6 +1211,19 @@
     <input type="text" id="subtaskTextInput" placeholder="例如：先看爭點整理">
   </div>
   <button class="btn-primary" onclick="saveNewSubtask()">新增</button>
+</div>
+
+<!-- 成就與獎勵畫面 -->
+<div class="timelog" id="achievementsView">
+  <div class="deck-top">
+    <button onclick="closeAchievements()">←</button>
+    <div class="ttl">成就與獎勵</div>
+  </div>
+  <div class="achieve-tabs">
+    <button id="achieveTabBadgesBtn" class="active" onclick="switchAchieveTab('badges')">🏅 徽章牆</button>
+    <button id="achieveTabVouchersBtn" onclick="switchAchieveTab('vouchers')">🎟️ 兌換券</button>
+  </div>
+  <div class="deck-body" id="achievementsBody" style="align-items:stretch; padding-top:6px;"></div>
 </div>
 
 <!-- 習慣打卡畫面 -->
@@ -4859,6 +4928,7 @@ async function renderQuizResult(){
     });
     quizStartTs = null;
     if(document.getElementById('timelog').classList.contains('open')) renderTimelog();
+    incrementQuizStats(quizState.score);
   }
 
   if(quizState.score === total && total >= 10){
@@ -5284,9 +5354,23 @@ async function renderTimelogTodoWidget(){
         const subtasks = t.subtasks || [];
         const subDone = subtasks.filter(s => s.done).length;
         return `
-        <div class="tl-quick-row" onclick="toggleTodoDone('${t.id}')">
-          <div class="tl-quick-check"></div>
-          <div class="tl-quick-text">${t.text}${t.note ? ` · ${t.note}` : ''}${subtasks.length ? ` (${subDone}/${subtasks.length})` : ''}</div>
+        <div class="tl-quick-row" style="align-items:flex-start;">
+          <div class="tl-quick-check" onclick="toggleTodoDone('${t.id}')" style="margin-top:1px;"></div>
+          <div style="flex:1; min-width:0;">
+            <div onclick="toggleTodoDone('${t.id}')" style="cursor:pointer;">
+              <span class="tl-quick-text" style="display:inline;">${t.text}${t.note ? ` · ${t.note}` : ''}</span>
+            </div>
+            ${subtasks.length ? `
+              <div class="todo-subtask-list" style="margin:4px 0 2px 2px;">
+                ${subtasks.map(s => `
+                  <div class="todo-subtask ${s.done ? 'done' : ''}">
+                    <div class="todo-subtask-check" onclick="toggleSubtaskDone('${t.id}','${s.id}')">${s.done ? '✓' : ''}</div>
+                    <div class="todo-subtask-text" onclick="toggleSubtaskDone('${t.id}','${s.id}')">${s.text}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
           ${todoDueBadge(t.due)}
         </div>
       `;
@@ -5621,7 +5705,8 @@ async function collectBackupData(){
     timelogs: {}, activeTimers: {},
     personalFlashcards: null, personalNotes: null, personalEssays: null,
     wrongAnswers: null, streakShields: null, seenStreakMilestones: null,
-    todos: null, habits: null, habitLogs: null, habitNotes: null, habitCounts: null, customCheckins: null
+    todos: null, habits: null, habitLogs: null, habitNotes: null, habitCounts: null, customCheckins: null,
+    achievementStats: null, unlockedBadges: null, vouchers: null
   };
   try {
     const listResult = await window.storage.list('timelog:', false);
@@ -5633,7 +5718,7 @@ async function collectBackupData(){
       } catch(e){}
     }
   } catch(e){}
-  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins'];
+  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers'];
   for(const key of singleKeys){
     try {
       const r = await window.storage.get(key, false);
@@ -5675,7 +5760,7 @@ async function applyImportedData(text){
     try { await window.storage.set('activeTimers', JSON.stringify(data.activeTimers), false); } catch(e){}
     activeTimers = data.activeTimers;
   }
-  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins'];
+  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers'];
   let restoredExtras = [];
   for(const key of singleKeys){
     if(data[key] !== null && data[key] !== undefined){
@@ -5695,6 +5780,7 @@ async function applyImportedData(text){
   renderWeakSpot();
   renderTimelogTodoWidget();
   renderTimelogHabitWidget();
+  renderAchievementsEntry();
 }
 
 /* ---------------------------------------------------------------------
@@ -6389,7 +6475,7 @@ async function renderSubjects(){
 const OVERLAY_IDS_BY_PRIORITY = [
   'quiz', 'session',
   'essayResultView', 'essayWriteView', 'essayListView',
-  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'customCheckinView', 'linksView',
+  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'linksView',
   'timelog', 'backupView', 'quizPicker',
   'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addFreeEntrySheet', 'addLinkSheet',
   'drawer'
@@ -6556,6 +6642,7 @@ async function renderRealStreak(){
   }
 
   checkStreakMilestone(streak);
+  checkBadgeUnlocks(streak);
 }
 
 /* ---------- 里程碑驚喜（不可預期的變動獎勵） ---------- */
@@ -6614,9 +6701,202 @@ function closeCelebrate(){
   document.getElementById('celebrateOverlay').classList.remove('show');
 }
 
+/* =======================================================================
+   成就與獎勵系統：徽章收藏牆（哈利波特／航海王主題）＋娛樂兌換券
+   觸發來源：連續打卡天數、待辦與習慣累積完成數、測驗累計答對題數。
+   ======================================================================= */
+const ACHIEVEMENT_BADGES = [
+  // ---- 連續打卡天數 ----
+  { id:'streak-3', category:'streak', threshold:3, icon:'🦉', name:'貓頭鷹快遞', req:'連續打卡 3 天', desc:'像貓頭鷹準時送信一樣，連續 3 天沒有斷過。' },
+  { id:'streak-7', category:'streak', threshold:7, icon:'🧙', name:'一年級結業', req:'連續打卡 7 天', desc:'撐過了霍格華茲的第一週，連續 7 天打卡成功。' },
+  { id:'streak-14', category:'streak', threshold:14, icon:'⚓', name:'正式起錨', req:'連續打卡 14 天', desc:'離開東海、正式出航，連續 14 天沒有斷過。' },
+  { id:'streak-30', category:'streak', threshold:30, icon:'🏴‍☠️', name:'偉大航道船員', req:'連續打卡 30 天', desc:'進入偉大航道等級的意志力，連續 30 天打卡。' },
+  { id:'streak-60', category:'streak', threshold:60, icon:'🪄', name:'N.E.W.T. 等級', req:'連續打卡 60 天', desc:'巫師界最高階測驗等級的堅持，連續 60 天。' },
+  { id:'streak-100', category:'streak', threshold:100, icon:'👑', name:'新世界的男人', req:'連續打卡 100 天', desc:'抵達新世界，連續 100 天沒有斷過紀錄。' },
+  // ---- 待辦／習慣累積完成數 ----
+  { id:'comp-10', category:'completion', threshold:10, icon:'📖', name:'草帽小隊新成員', req:'累積完成 10 項待辦／習慣', desc:'加入了自己的冒險小隊，累積完成 10 項。' },
+  { id:'comp-30', category:'completion', threshold:30, icon:'⚡', name:'離開水蠟樹街', req:'累積完成 30 項待辦／習慣', desc:'告別了原地踏步的日子，累積完成 30 項。' },
+  { id:'comp-75', category:'completion', threshold:75, icon:'🗡️', name:'見習劍士', req:'累積完成 75 項待辦／習慣', desc:'開始有模有樣了，累積完成 75 項。' },
+  { id:'comp-150', category:'completion', threshold:150, icon:'🔱', name:'海軍本部注目', req:'累積完成 150 項待辦／習慣', desc:'累積到這個量，已經很有名了，完成 150 項。' },
+  { id:'comp-300', category:'completion', threshold:300, icon:'💍', name:'鳳凰會成員', req:'累積完成 300 項待辦／習慣', desc:'值得信賴的老手，累積完成 300 項。' },
+  // ---- 測驗累計答對題數 ----
+  { id:'quiz-50', category:'quiz', threshold:50, icon:'🪄', name:'橡木魔杖初體驗', req:'累計答對 50 題', desc:'魔杖選擇了你，累計答對 50 題。' },
+  { id:'quiz-150', category:'quiz', threshold:150, icon:'📜', name:'O.W.L. 及格', req:'累計答對 150 題', desc:'普等巫測及格等級，累計答對 150 題。' },
+  { id:'quiz-300', category:'quiz', threshold:300, icon:'🎯', name:'三刀流劍士', req:'累計答對 300 題', desc:'精準又扎實，累計答對 300 題。' },
+  { id:'quiz-500', category:'quiz', threshold:500, icon:'🏆', name:'N.E.W.T. 全優', req:'累計答對 500 題', desc:'超勞等巫測等級的實力，累計答對 500 題。' },
+  { id:'quiz-1000', category:'quiz', threshold:1000, icon:'👑', name:'海賊王等級', req:'累計答對 1000 題', desc:'頂點等級的累積，累計答對 1000 題。' },
+];
+
+const VOUCHER_TEMPLATES = [
+  { icon:'🪄', text:'今晚可以心安理得看一集《哈利波特》' },
+  { icon:'🏴‍☠️', text:'去追一集最新的《航海王》，不用有罪惡感' },
+  { icon:'📺', text:'挑一部想看很久的電影或影集' },
+  { icon:'📖', text:'看一話漫畫，純粹耍廢也可以' },
+  { icon:'🍿', text:'配零食看一集動畫，今天妳值得' },
+];
+
+async function loadAchievementStats(){
+  try {
+    const r = await window.storage.get('achievementStats', false);
+    return r ? JSON.parse(r.value) : { totalCompletions: 0, totalQuizCorrect: 0, totalQuizSessions: 0 };
+  } catch(e){
+    return { totalCompletions: 0, totalQuizCorrect: 0, totalQuizSessions: 0 };
+  }
+}
+async function saveAchievementStats(stats){
+  try { await window.storage.set('achievementStats', JSON.stringify(stats), false); } catch(e){}
+}
+async function loadUnlockedBadges(){
+  try {
+    const r = await window.storage.get('unlockedBadges', false);
+    return r ? JSON.parse(r.value) : [];
+  } catch(e){
+    return [];
+  }
+}
+async function saveUnlockedBadges(list){
+  try { await window.storage.set('unlockedBadges', JSON.stringify(list), false); } catch(e){}
+}
+async function loadVouchers(){
+  try {
+    const r = await window.storage.get('vouchers', false);
+    return r ? JSON.parse(r.value) : [];
+  } catch(e){
+    return [];
+  }
+}
+async function saveVouchers(list){
+  try { await window.storage.set('vouchers', JSON.stringify(list), false); } catch(e){}
+}
+
+async function grantVoucher(){
+  const list = await loadVouchers();
+  const t = VOUCHER_TEMPLATES[Math.floor(Math.random() * VOUCHER_TEMPLATES.length)];
+  list.push({ id: 'v-' + Date.now() + Math.random().toString(36).slice(2,6), icon: t.icon, text: t.text, earnedAt: Date.now(), used: false, usedAt: null });
+  await saveVouchers(list);
+}
+
+/* 完成一項待辦或習慣時呼叫（只算「單次打勾型」，次數累計型不計入，避免灌水） */
+async function incrementCompletionCount(){
+  const stats = await loadAchievementStats();
+  stats.totalCompletions = (stats.totalCompletions || 0) + 1;
+  await saveAchievementStats(stats);
+  await checkBadgeUnlocks();
+}
+/* 一次測驗結束時呼叫，correctDelta 是這次測驗答對的題數 */
+async function incrementQuizStats(correctDelta){
+  const stats = await loadAchievementStats();
+  stats.totalQuizCorrect = (stats.totalQuizCorrect || 0) + correctDelta;
+  stats.totalQuizSessions = (stats.totalQuizSessions || 0) + 1;
+  await saveAchievementStats(stats);
+  await checkBadgeUnlocks();
+}
+
+async function checkBadgeUnlocks(currentStreak){
+  const stats = await loadAchievementStats();
+  const unlocked = await loadUnlockedBadges();
+  const newlyUnlocked = [];
+  for(const b of ACHIEVEMENT_BADGES){
+    if(unlocked.includes(b.id)) continue;
+    let met = false;
+    if(b.category === 'streak' && typeof currentStreak === 'number') met = currentStreak >= b.threshold;
+    if(b.category === 'completion') met = (stats.totalCompletions || 0) >= b.threshold;
+    if(b.category === 'quiz') met = (stats.totalQuizCorrect || 0) >= b.threshold;
+    if(met){
+      unlocked.push(b.id);
+      newlyUnlocked.push(b);
+    }
+  }
+  if(newlyUnlocked.length){
+    await saveUnlockedBadges(unlocked);
+    for(const b of newlyUnlocked) await grantVoucher();
+    renderAchievementsEntry();
+    celebrateMilestone(`🏅 解鎖徽章：${newlyUnlocked[0].icon} ${newlyUnlocked[0].name}`);
+  }
+}
+
+async function renderAchievementsEntry(){
+  const el = document.getElementById('homeAchieveSummary');
+  if(!el) return;
+  const vouchers = await loadVouchers();
+  const unusedCount = vouchers.filter(v => !v.used).length;
+  el.textContent = unusedCount > 0 ? `🎟️ 有 ${unusedCount} 張兌換券還沒用` : '徽章收藏牆・娛樂兌換券';
+}
+
+let achieveTab = 'badges';
+async function openAchievements(){
+  document.getElementById('achievementsView').classList.add('open');
+  closeDrawer();
+  await renderAchievementsBody();
+}
+function closeAchievements(){
+  document.getElementById('achievementsView').classList.remove('open');
+}
+function switchAchieveTab(tab){
+  achieveTab = tab;
+  document.getElementById('achieveTabBadgesBtn').classList.toggle('active', tab === 'badges');
+  document.getElementById('achieveTabVouchersBtn').classList.toggle('active', tab === 'vouchers');
+  renderAchievementsBody();
+}
+async function renderAchievementsBody(){
+  const body = document.getElementById('achievementsBody');
+  if(achieveTab === 'badges'){
+    const unlocked = await loadUnlockedBadges();
+    const groups = [
+      { key:'streak', title:'🔥 連續打卡' },
+      { key:'completion', title:'✅ 累積完成待辦／習慣' },
+      { key:'quiz', title:'📝 測驗累計答對' },
+    ];
+    body.innerHTML = groups.map(g => {
+      const badges = ACHIEVEMENT_BADGES.filter(b => b.category === g.key);
+      return `
+        <div class="badge-section-title">${g.title}</div>
+        <div class="badge-grid">
+          ${badges.map(b => {
+            const isUnlocked = unlocked.includes(b.id);
+            return `
+              <div class="badge-cell ${isUnlocked ? '' : 'locked'}">
+                <div class="b-icon">${b.icon}</div>
+                <div class="b-name">${b.name}</div>
+                <div class="b-req">${isUnlocked ? b.desc : b.req}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }).join('');
+  } else {
+    const vouchers = await loadVouchers();
+    if(!vouchers.length){
+      body.innerHTML = `<div class="deck-empty"><div class="big">🎟️</div>還沒有兌換券<br>解鎖徽章時會自動獲得一張</div>`;
+      return;
+    }
+    const sorted = [...vouchers].sort((a,b) => (a.used === b.used) ? b.earnedAt - a.earnedAt : (a.used ? 1 : -1));
+    body.innerHTML = sorted.map(v => `
+      <div class="voucher-item ${v.used ? 'used' : ''}">
+        <div class="v-icon">${v.icon}</div>
+        <div class="v-txt">${v.text}</div>
+        ${v.used ? `<div class="v-used-label">已使用</div>` : `<button class="v-btn" onclick="redeemVoucher('${v.id}')">兌換</button>`}
+      </div>
+    `).join('');
+  }
+}
+async function redeemVoucher(id){
+  const list = await loadVouchers();
+  const v = list.find(x => x.id === id);
+  if(!v) return;
+  v.used = true;
+  v.usedAt = Date.now();
+  await saveVouchers(list);
+  await renderAchievementsBody();
+  renderAchievementsEntry();
+  showCheckinToast('兌換成功，去享受吧！');
+}
+
 renderCountdown();
 renderDayLabel();
 renderRealStreak();
+renderAchievementsEntry();
 loadPersonalCards().then(updateDeckMenuSub);
 /* ---------- 待辦事項（到期日／優先度） ---------- */
 const PRIORITY_ORDER = { high: 0, mid: 1, low: 2 };
@@ -6744,6 +7024,7 @@ async function finalizeTodoCompletion(id, completionNote){
   if(document.getElementById('timelog').classList.contains('open')) renderTimelog();
   await renderTodosFull();
   renderTimelogTodoWidget();
+  incrementCompletionCount();
 }
 
 async function toggleTodoDone(id){
@@ -7040,6 +7321,7 @@ async function finalizeHabitCheckin(id, note){
   if(document.getElementById('timelog').classList.contains('open')) renderTimelog();
   await renderHabitsFull();
   renderTimelogHabitWidget();
+  incrementCompletionCount();
   renderRealStreak();
 }
 
