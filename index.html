@@ -43,55 +43,6 @@
     position: relative;
   }
 
-  /* ---------- 較寬螢幕：滿版顯示，字級跟著放大，不要維持手機那種擠壓大小 ---------- */
-  @media (min-width: 900px){
-    .app { max-width: 1400px; }
-
-    /* 待辦事項／習慣打卡／時間軸列表等「全螢幕畫面」原本鎖死480px寬度是給手機用的，
-       桌面版放寬，不要讓內容擠在畫面中間、兩側留白 */
-    .deck-body, .timelog-body { max-width: 1200px; }
-
-    /* 首頁三欄的字級比照時間軸畫面裡本來就沒被壓縮過、看起來舒適的 .tl-quick-* 字級，
-       不要再走極端（之前太小、又一次跳到3倍太大），這次落在中間、跟時間軸畫面一致的舒適感 */
-    .home-3col { gap: 18px; padding: 0 24px 18px; }
-    .col-title { font-size: 15px; margin-bottom: 10px; }
-    .col-stat { font-size: 13px; padding: 8px 10px; margin-bottom: 10px; }
-    .mini-todo-item, .mini-habit-item { padding: 9px 6px; gap: 10px; }
-    .mini-todo-item .mini-check, .mini-habit-item .mini-check { width: 19px; height: 19px; }
-    .mini-todo-item .mini-txt, .mini-habit-item .mini-txt { font-size: 14px; white-space: normal; line-height: 1.5; }
-    .mini-more { font-size: 12.5px; margin-top: 8px; }
-    .mini-empty { font-size: 14px; padding: 16px 4px; }
-
-    .col-law .law-widget, .col-law .highlight-card { padding: 16px; border-radius: 14px; margin-bottom: 12px; }
-    .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 11.5px; margin-bottom: 8px; }
-    .col-law .law-subject-tag { font-size: 11px; padding: 3px 9px; }
-    .col-law .daily-count-badge { font-size: 11px; padding: 2px 8px; }
-    .col-law .law-widget .law-art { font-size: 16px; margin-bottom: 8px; }
-    .col-law .law-widget .law-text-box { font-size: 14px; padding: 12px 14px; max-height: 260px; line-height: 1.7; }
-    .col-law .highlight-card .hl-front { font-size: 15px; line-height: 1.5; }
-    .col-law .highlight-card .hl-front.answered { font-size: 12.5px; }
-    .col-law .highlight-card .hl-back { font-size: 13px; max-height: 240px; line-height: 1.6; }
-    .col-law .highlight-card .hl-law { font-size: 12px; }
-    .col-law .highlight-card .hl-hint { font-size: 11.5px; }
-
-    /* 時間軸畫面：桌面版改成左中右三欄——左＝待辦快捷、中＝列表／方塊／月曆、右＝習慣快捷 */
-    #timelog { display: flex; flex-direction: column; }
-    #timelog .timelog-top { flex-shrink: 0; }
-    #timelog .timelog-3row { display: flex; gap: 16px; flex: 1; min-height: 0; padding: 0 20px 20px; align-items: flex-start; }
-    #timelog #timelogTodoSlot, #timelog #timelogHabitSlot {
-      flex: 0 0 320px; max-height: none; overflow-y: visible;
-    }
-    #timelog .timelog-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-
-    .brand-strip { font-size: 13px; padding: 12px 24px; }
-    .day-streak-row .day { font-size: 14px; }
-    .topbar .streak { font-size: 13px; }
-    .countdown-banner .item .num { font-size: 40px; }
-    .countdown-banner .item .lbl { font-size: 12px; }
-    .checkin-btn { font-size: 13px; padding: 10px 16px; }
-    #timelog .timelog-body, #timelog .block-scroll, #timelog .cal-scroll { max-width: none; }
-  }
-
   /* ---------- Brand strip ---------- */
   .brand-strip {
     display: flex; align-items: center; gap: 6px;
@@ -966,6 +917,57 @@
   }
   .block-hint {
     text-align: center; font-size: 11.5px; color: var(--ink-3); padding: 10px 20px 0;
+  }
+
+  /* ---------- 較寬螢幕：滿版顯示，字級跟著放大，不要維持手機那種擠壓大小 ----------
+     這個媒體查詢刻意放在整個 <style> 區塊的最後面：CSS的規則是「後面蓋掉前面」，
+     如果放在前面，後面其他同名class的樣式會把這裡蓋掉、桌面版設定完全不會生效
+     （這就是之前調了好幾次都沒用的真正原因）。 */
+  @media (min-width: 900px){
+    .app { max-width: 1400px; }
+
+    /* 待辦事項／習慣打卡／時間軸列表等「全螢幕畫面」原本鎖死480px寬度是給手機用的，
+       桌面版放寬，不要讓內容擠在畫面中間、兩側留白 */
+    .deck-body, .timelog-body { max-width: 1200px; }
+
+    /* 首頁三欄的字級比照時間軸畫面裡本來就沒被壓縮過、看起來舒適的 .tl-quick-* 字級 */
+    .home-3col { gap: 18px; padding: 0 24px 18px; }
+    .col-title { font-size: 15px; margin-bottom: 10px; }
+    .col-stat { font-size: 13px; padding: 8px 10px; margin-bottom: 10px; }
+    .mini-todo-item, .mini-habit-item { padding: 9px 6px; gap: 10px; }
+    .mini-todo-item .mini-check, .mini-habit-item .mini-check { width: 19px; height: 19px; }
+    .mini-todo-item .mini-txt, .mini-habit-item .mini-txt { font-size: 14px; white-space: normal; line-height: 1.5; }
+    .mini-more { font-size: 12.5px; margin-top: 8px; }
+    .mini-empty { font-size: 14px; padding: 16px 4px; }
+
+    .col-law .law-widget, .col-law .highlight-card { padding: 16px; border-radius: 14px; margin-bottom: 12px; }
+    .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 11.5px; margin-bottom: 8px; }
+    .col-law .law-subject-tag { font-size: 11px; padding: 3px 9px; }
+    .col-law .daily-count-badge { font-size: 11px; padding: 2px 8px; }
+    .col-law .law-widget .law-art { font-size: 16px; margin-bottom: 8px; }
+    .col-law .law-widget .law-text-box { font-size: 14px; padding: 12px 14px; max-height: 260px; line-height: 1.7; }
+    .col-law .highlight-card .hl-front { font-size: 15px; line-height: 1.5; }
+    .col-law .highlight-card .hl-front.answered { font-size: 12.5px; }
+    .col-law .highlight-card .hl-back { font-size: 13px; max-height: 240px; line-height: 1.6; }
+    .col-law .highlight-card .hl-law { font-size: 12px; }
+    .col-law .highlight-card .hl-hint { font-size: 11.5px; }
+
+    /* 時間軸畫面：桌面版改成左中右三欄——左＝待辦快捷、中＝列表／方塊／月曆、右＝習慣快捷 */
+    #timelog { display: flex; flex-direction: column; }
+    #timelog .timelog-top { flex-shrink: 0; }
+    #timelog .timelog-3row { display: flex; gap: 16px; flex: 1; min-height: 0; padding: 0 20px 20px; align-items: flex-start; }
+    #timelog #timelogTodoSlot, #timelog #timelogHabitSlot {
+      flex: 0 0 320px; max-height: none; overflow-y: visible;
+    }
+    #timelog .timelog-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .brand-strip { font-size: 13px; padding: 12px 24px; }
+    .day-streak-row .day { font-size: 14px; }
+    .topbar .streak { font-size: 13px; }
+    .countdown-banner .item .num { font-size: 40px; }
+    .countdown-banner .item .lbl { font-size: 12px; }
+    .checkin-btn { font-size: 13px; padding: 10px 16px; }
+    #timelog .timelog-body, #timelog .block-scroll, #timelog .cal-scroll { max-width: none; }
   }
 </style>
 </head>
