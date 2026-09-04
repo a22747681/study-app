@@ -288,6 +288,27 @@
   .custom-checkin-row .cc-label { flex: 1; font-size: 13px; font-weight: 700; color: var(--ink); }
   .custom-checkin-row .cc-delete { background: none; border: none; color: var(--ink-3); font-size: 14px; }
 
+  /* ---------- 例行提問管理 ---------- */
+  .routine-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; }
+  .routine-row .r-icon { font-size: 18px; flex-shrink: 0; }
+  .routine-row .r-body { flex: 1; min-width: 0; }
+  .routine-row .r-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .routine-row .r-window { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .routine-row .r-delete { background: none; border: none; color: var(--ink-3); font-size: 14px; flex-shrink: 0; }
+
+  /* ---------- 首頁：主動提問區塊 ---------- */
+  .routine-prompt-card {
+    margin: 0 24px 16px; background: var(--card); border: 1px solid var(--gold);
+    border-radius: 16px; padding: 4px 16px;
+  }
+  .routine-prompt-row {
+    display: flex; align-items: center; gap: 10px; padding: 12px 0; cursor: pointer;
+  }
+  .routine-prompt-row + .routine-prompt-row { border-top: 1px solid var(--line); }
+  .routine-prompt-row .rp-icon { font-size: 20px; flex-shrink: 0; }
+  .routine-prompt-row .rp-text { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .routine-prompt-row .rp-arrow { font-size: 15px; color: var(--gold-deep); flex-shrink: 0; }
+
   /* ---------- 時間軸頂部：待辦／習慣快捷區塊 ---------- */
   .tl-quick-wrap:empty { display: none; }
   .tl-quick-section {
@@ -882,6 +903,8 @@
 
   <div id="activeTimerBanner"></div>
 
+  <div id="routinePromptSlot"></div>
+
   <div class="home-timeline-card" onclick="openTimelog()">
     <div class="htc-icon">🕐</div>
     <div class="htc-txt">
@@ -954,6 +977,7 @@
     <div class="drawer-item minor" onclick="openHabits()"><div class="ic">🔥</div><div class="txt"><div class="t1">習慣打卡</div><div class="t2" id="habitsMenuSub">自訂清單＋連續天數</div></div></div>
     <div class="drawer-item minor" onclick="openAchievements()"><div class="ic">🏆</div><div class="txt"><div class="t1">成就與獎勵</div><div class="t2">徽章收藏牆・娛樂兌換券</div></div></div>
     <div class="drawer-item minor" onclick="openCustomCheckinManager()"><div class="ic">🛠️</div><div class="txt"><div class="t1">自訂打卡按鈕</div><div class="t2">新增專屬於你的快速打卡</div></div></div>
+    <div class="drawer-item minor" onclick="openRoutineCheckpoints()"><div class="ic">⏰</div><div class="txt"><div class="t1">例行提問設定</div><div class="t2">開App時主動問幾點做了什麼</div></div></div>
 
     <div class="drawer-section-label">其他</div>
     <div class="drawer-item minor" onclick="openBackup()"><div class="ic">💾</div><div class="txt"><div class="t1">資料備份與還原</div><div class="t2">匯出／匯入，搬到別的裝置用</div></div></div>
@@ -1326,6 +1350,62 @@
     <input type="text" id="ccLabelInput" placeholder="例如：背單字">
   </div>
   <button class="btn-primary" onclick="saveNewCustomCheckin()">儲存按鈕</button>
+</div>
+
+<!-- 例行提問設定畫面 -->
+<div class="timelog" id="routineView">
+  <div class="deck-top">
+    <button onclick="closeRoutineCheckpoints()">←</button>
+    <div class="ttl">例行提問設定</div>
+    <button class="checkin-btn" onclick="openAddRoutineCheckpoint()" style="padding:7px 11px; font-size:12px;">＋ 新增</button>
+  </div>
+  <div style="padding:14px 16px 0; max-width:480px; margin:0 auto; width:100%; box-sizing:border-box; font-size:12.5px; color:var(--ink-3); line-height:1.6;">
+    設定想被主動詢問的例行事項跟大概時間範圍。打開App時，如果時間到了但還沒記錄，首頁最上面就會主動跳出來問妳。
+  </div>
+  <div class="deck-body" id="routineBody" style="align-items:stretch; padding-top:14px;"></div>
+</div>
+
+<!-- 新增例行提問選單 -->
+<div class="checkin-scrim" id="addRoutineScrim" onclick="closeAddRoutineCheckpoint()"></div>
+<div class="checkin-sheet" id="addRoutineSheet">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+    <h3>新增例行提問</h3>
+    <button onclick="closeAddRoutineCheckpoint()" style="background:none; border:none; font-size:22px; color:var(--ink-3); line-height:1; width:44px; height:44px; display:flex; align-items:center; justify-content:center; margin:-10px -10px 0 0; flex-shrink:0;">✕</button>
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:12px;">
+    <label>圖示（一個emoji，選填）</label>
+    <input type="text" id="routineIconInput" placeholder="例如：🚌" maxlength="4">
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:12px;">
+    <label>事項名稱</label>
+    <input type="text" id="routineLabelInput" placeholder="例如：搭車">
+  </div>
+  <div class="edit-sheet-row" style="margin-bottom:16px;">
+    <div class="edit-sheet-field">
+      <label>大概最早時間</label>
+      <input type="time" id="routineWindowStartInput">
+    </div>
+    <div class="edit-sheet-field">
+      <label>大概最晚時間</label>
+      <input type="time" id="routineWindowEndInput">
+    </div>
+  </div>
+  <button class="btn-primary" onclick="saveNewRoutineCheckpoint()">儲存</button>
+</div>
+
+<!-- 回答例行提問選單 -->
+<div class="checkin-scrim" id="answerRoutineScrim" onclick="closeAnswerRoutine()"></div>
+<div class="checkin-sheet" id="answerRoutineSheet">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+    <h3 id="answerRoutineTitle">幾點？</h3>
+    <button onclick="closeAnswerRoutine()" style="background:none; border:none; font-size:22px; color:var(--ink-3); line-height:1; width:44px; height:44px; display:flex; align-items:center; justify-content:center; margin:-10px -10px 0 0; flex-shrink:0;">✕</button>
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:16px;">
+    <label>時間</label>
+    <input type="time" id="answerRoutineTimeInput">
+  </div>
+  <button class="btn-primary" onclick="confirmAnswerRoutine()">記錄</button>
+  <button class="btn-primary" style="margin-top:8px; background:var(--card); color:var(--ink-2); border:1px solid var(--line);" onclick="skipRoutineToday()">今天沒有／略過</button>
 </div>
 
 <!-- 自由新增時間軸紀錄選單 -->
@@ -5786,7 +5866,8 @@ async function collectBackupData(){
     personalFlashcards: null, personalNotes: null, personalEssays: null,
     wrongAnswers: null, streakShields: null, seenStreakMilestones: null,
     todos: null, habits: null, habitLogs: null, habitNotes: null, habitCounts: null, customCheckins: null,
-    achievementStats: null, unlockedBadges: null, vouchers: null
+    achievementStats: null, unlockedBadges: null, vouchers: null,
+    routineCheckpoints: null, routineLogs: null
   };
   try {
     const listResult = await window.storage.list('timelog:', false);
@@ -5798,7 +5879,7 @@ async function collectBackupData(){
       } catch(e){}
     }
   } catch(e){}
-  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers'];
+  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs'];
   for(const key of singleKeys){
     try {
       const r = await window.storage.get(key, false);
@@ -5840,7 +5921,7 @@ async function applyImportedData(text){
     try { await window.storage.set('activeTimers', JSON.stringify(data.activeTimers), false); } catch(e){}
     activeTimers = data.activeTimers;
   }
-  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers'];
+  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs'];
   let restoredExtras = [];
   for(const key of singleKeys){
     if(data[key] !== null && data[key] !== undefined){
@@ -5861,6 +5942,7 @@ async function applyImportedData(text){
   renderTimelogTodoWidget();
   renderTimelogHabitWidget();
   renderAchievementsEntry();
+  renderRoutinePromptWidget();
 }
 
 /* ---------------------------------------------------------------------
@@ -6555,9 +6637,9 @@ async function renderSubjects(){
 const OVERLAY_IDS_BY_PRIORITY = [
   'quiz', 'session',
   'essayResultView', 'essayWriteView', 'essayListView',
-  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'linksView',
+  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'routineView', 'linksView',
   'timelog', 'backupView', 'quizPicker',
-  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
+  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addRoutineSheet', 'answerRoutineSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
   'drawer'
 ];
 const OVERLAY_SCRIM_MAP = {
@@ -6569,6 +6651,8 @@ const OVERLAY_SCRIM_MAP = {
   todoCompletionNoteSheet: 'todoCompletionNoteScrim',
   addSubtaskSheet: 'addSubtaskScrim',
   addCustomCheckinSheet: 'addCustomCheckinScrim',
+  addRoutineSheet: 'addRoutineScrim',
+  answerRoutineSheet: 'answerRoutineScrim',
   addFreeEntrySheet: 'addFreeEntryScrim',
   lawSubjectSheet: 'lawSubjectScrim',
   addLinkSheet: 'addLinkScrim',
@@ -6978,6 +7062,8 @@ renderCountdown();
 renderDayLabel();
 renderRealStreak();
 renderAchievementsEntry();
+renderRoutinePromptWidget();
+setInterval(renderRoutinePromptWidget, 5 * 60 * 1000); // 每5分鐘重新檢查一次，App開著沒關也會自動跳出新的提問
 loadPersonalCards().then(updateDeckMenuSub);
 /* ---------- 待辦事項（到期日／優先度） ---------- */
 const PRIORITY_ORDER = { high: 0, mid: 1, low: 2 };
@@ -7577,6 +7663,186 @@ async function renderCustomCheckinManager(){
       <button class="cc-delete" onclick="deleteCustomCheckin('${c.id}')">🗑</button>
     </div>
   `).join('');
+}
+
+/* =======================================================================
+   例行提問：開 App 時主動問「幾點做了什麼」，不用自己點打卡選項目。
+   使用者自訂想被詢問的事項＋大概的時間範圍，時間到了但今天還沒記錄時，
+   首頁最上面會自動跳出提問卡片。
+   ======================================================================= */
+const DEFAULT_ROUTINE_CHECKPOINTS = [
+  { id: 'routine-default-wake', icon: '📝', label: '起床', windowStart: '05:00', windowEnd: '07:30' },
+  { id: 'routine-default-bus', icon: '🚌', label: '搭車', windowStart: '07:00', windowEnd: '08:30' },
+  { id: 'routine-default-office', icon: '🏢', label: '到公司', windowStart: '08:00', windowEnd: '09:30' },
+];
+
+async function loadRoutineCheckpoints(){
+  try {
+    const r = await window.storage.get('routineCheckpoints', false);
+    if(r) return JSON.parse(r.value);
+    // 第一次使用：預先放入三個常見的例子，使用者可以自己刪改
+    await saveRoutineCheckpoints(DEFAULT_ROUTINE_CHECKPOINTS);
+    return DEFAULT_ROUTINE_CHECKPOINTS;
+  } catch(e){
+    return [];
+  }
+}
+async function saveRoutineCheckpoints(list){
+  try { await window.storage.set('routineCheckpoints', JSON.stringify(list), false); } catch(e){}
+}
+async function loadRoutineLogs(){
+  try {
+    const r = await window.storage.get('routineLogs', false);
+    return r ? JSON.parse(r.value) : {};
+  } catch(e){
+    return {};
+  }
+}
+async function saveRoutineLogs(logs){
+  try { await window.storage.set('routineLogs', JSON.stringify(logs), false); } catch(e){}
+}
+
+function nowHM(){
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+async function openRoutineCheckpoints(){
+  document.getElementById('routineView').classList.add('open');
+  closeDrawer();
+  await renderRoutineCheckpointsFull();
+}
+function closeRoutineCheckpoints(){
+  document.getElementById('routineView').classList.remove('open');
+}
+function openAddRoutineCheckpoint(){
+  document.getElementById('routineIconInput').value = '';
+  document.getElementById('routineLabelInput').value = '';
+  document.getElementById('routineWindowStartInput').value = '';
+  document.getElementById('routineWindowEndInput').value = '';
+  document.getElementById('addRoutineSheet').classList.add('open');
+  document.getElementById('addRoutineScrim').classList.add('open');
+}
+function closeAddRoutineCheckpoint(){
+  document.getElementById('addRoutineSheet').classList.remove('open');
+  document.getElementById('addRoutineScrim').classList.remove('open');
+}
+async function saveNewRoutineCheckpoint(){
+  const icon = document.getElementById('routineIconInput').value.trim() || '⏰';
+  const label = document.getElementById('routineLabelInput').value.trim();
+  const windowStart = document.getElementById('routineWindowStartInput').value;
+  const windowEnd = document.getElementById('routineWindowEndInput').value;
+  if(!label || !windowStart || !windowEnd){
+    showCheckinToast('事項名稱跟時間範圍不能空白');
+    return;
+  }
+  const list = await loadRoutineCheckpoints();
+  list.push({ id: 'routine-' + Date.now(), icon, label, windowStart, windowEnd });
+  await saveRoutineCheckpoints(list);
+  closeAddRoutineCheckpoint();
+  showCheckinToast('已新增例行提問');
+  await renderRoutineCheckpointsFull();
+  await renderRoutinePromptWidget();
+}
+async function deleteRoutineCheckpoint(id){
+  const list = await loadRoutineCheckpoints();
+  await saveRoutineCheckpoints(list.filter(r => r.id !== id));
+  await renderRoutineCheckpointsFull();
+  await renderRoutinePromptWidget();
+}
+async function renderRoutineCheckpointsFull(){
+  const list = await loadRoutineCheckpoints();
+  const body = document.getElementById('routineBody');
+  if(!list.length){
+    body.innerHTML = `<div class="deck-empty"><div class="big">⏰</div>還沒有例行提問<br>點右上角「＋ 新增」開始設定，例如「起床」「搭車」「到公司」</div>`;
+    return;
+  }
+  body.innerHTML = list.map(r => `
+    <div class="routine-row">
+      <div class="r-icon">${r.icon}</div>
+      <div class="r-body">
+        <div class="r-label">${r.label}</div>
+        <div class="r-window">大概 ${r.windowStart}～${r.windowEnd}</div>
+      </div>
+      <button class="r-delete" onclick="deleteRoutineCheckpoint('${r.id}')">🗑</button>
+    </div>
+  `).join('');
+}
+
+/* 首頁：主動提問卡片。條件＝現在時間已經進入該事項的時間範圍（>= windowStart），且今天還沒記錄過。 */
+async function renderRoutinePromptWidget(){
+  const slot = document.getElementById('routinePromptSlot');
+  if(!slot) return;
+  const list = await loadRoutineCheckpoints();
+  if(!list.length){
+    slot.innerHTML = '';
+    return;
+  }
+  const logs = await loadRoutineLogs();
+  const todayDone = logs[todayKey()] || [];
+  const now = nowHM();
+  const due = list.filter(r => !todayDone.includes(r.id) && now >= r.windowStart);
+  if(!due.length){
+    slot.innerHTML = '';
+    return;
+  }
+  slot.innerHTML = `
+    <div class="routine-prompt-card">
+      ${due.map(r => `
+        <div class="routine-prompt-row" onclick="openAnswerRoutine('${r.id}')">
+          <div class="rp-icon">${r.icon}</div>
+          <div class="rp-text">你幾點${r.label}的？</div>
+          <div class="rp-arrow">›</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+let pendingRoutineId = null;
+async function openAnswerRoutine(id){
+  pendingRoutineId = id;
+  const list = await loadRoutineCheckpoints();
+  const r = list.find(x => x.id === id);
+  if(!r) return;
+  document.getElementById('answerRoutineTitle').textContent = `你幾點${r.label}的？`;
+  document.getElementById('answerRoutineTimeInput').value = nowHM();
+  document.getElementById('answerRoutineSheet').classList.add('open');
+  document.getElementById('answerRoutineScrim').classList.add('open');
+}
+function closeAnswerRoutine(){
+  document.getElementById('answerRoutineSheet').classList.remove('open');
+  document.getElementById('answerRoutineScrim').classList.remove('open');
+}
+async function markRoutineDoneToday(id){
+  const logs = await loadRoutineLogs();
+  const key = todayKey();
+  logs[key] = logs[key] || [];
+  if(!logs[key].includes(id)) logs[key].push(id);
+  await saveRoutineLogs(logs);
+}
+async function confirmAnswerRoutine(){
+  const id = pendingRoutineId;
+  const timeStr = document.getElementById('answerRoutineTimeInput').value;
+  if(!timeStr) return;
+  const list = await loadRoutineCheckpoints();
+  const r = list.find(x => x.id === id);
+  if(!r) return;
+  const d = new Date();
+  const [h, m] = timeStr.split(':').map(Number);
+  const ts = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
+  await addLogEntry({ startTs: ts, endTs: ts, type:'manual', label: `${r.icon} ${r.label}`, detail: null });
+  await markRoutineDoneToday(id);
+  closeAnswerRoutine();
+  showCheckinToast('已記錄');
+  await renderRoutinePromptWidget();
+  if(document.getElementById('timelog').classList.contains('open')) renderTimelog();
+}
+async function skipRoutineToday(){
+  const id = pendingRoutineId;
+  await markRoutineDoneToday(id);
+  closeAnswerRoutine();
+  await renderRoutinePromptWidget();
 }
 
 /* ---------- 時間軸自由新增紀錄（自訂時間＋任意內容） ---------- */
