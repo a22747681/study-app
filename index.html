@@ -45,48 +45,50 @@
 
   /* ---------- 較寬螢幕：滿版顯示，字級跟著放大，不要維持手機那種擠壓大小 ---------- */
   @media (min-width: 900px){
-    .app { max-width: 2400px; }
+    .app { max-width: 1400px; }
 
     /* 待辦事項／習慣打卡／時間軸列表等「全螢幕畫面」原本鎖死480px寬度是給手機用的，
        桌面版放寬，不要讓內容擠在畫面中間、兩側留白 */
-    .deck-body, .timelog-body { max-width: 1800px; }
+    .deck-body, .timelog-body { max-width: 1200px; }
 
-    .home-3col { gap: 30px; padding: 0 30px 30px; }
-    .col-title { font-size: 57px; margin-bottom: 24px; }
-    .col-stat { font-size: 51px; padding: 20px 24px; margin-bottom: 24px; }
-    .mini-todo-item, .mini-habit-item { padding: 20px 14px; gap: 18px; }
-    .mini-todo-item .mini-check, .mini-habit-item .mini-check { width: 44px; height: 44px; }
-    .mini-todo-item .mini-txt, .mini-habit-item .mini-txt { font-size: 54px; white-space: normal; line-height: 1.4; }
-    .mini-more { font-size: 42px; margin-top: 20px; }
-    .mini-empty { font-size: 54px; padding: 40px 8px; }
+    /* 首頁三欄的字級比照時間軸畫面裡本來就沒被壓縮過、看起來舒適的 .tl-quick-* 字級，
+       不要再走極端（之前太小、又一次跳到3倍太大），這次落在中間、跟時間軸畫面一致的舒適感 */
+    .home-3col { gap: 18px; padding: 0 24px 18px; }
+    .col-title { font-size: 15px; margin-bottom: 10px; }
+    .col-stat { font-size: 13px; padding: 8px 10px; margin-bottom: 10px; }
+    .mini-todo-item, .mini-habit-item { padding: 9px 6px; gap: 10px; }
+    .mini-todo-item .mini-check, .mini-habit-item .mini-check { width: 19px; height: 19px; }
+    .mini-todo-item .mini-txt, .mini-habit-item .mini-txt { font-size: 14px; white-space: normal; line-height: 1.5; }
+    .mini-more { font-size: 12.5px; margin-top: 8px; }
+    .mini-empty { font-size: 14px; padding: 16px 4px; }
 
-    .col-law .law-widget, .col-law .highlight-card { padding: 36px; border-radius: 24px; margin-bottom: 24px; }
-    .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 48px; margin-bottom: 20px; }
-    .col-law .law-subject-tag { font-size: 42px; padding: 8px 20px; }
-    .col-law .daily-count-badge { font-size: 42px; padding: 6px 18px; }
-    .col-law .law-widget .law-art { font-size: 72px; margin-bottom: 20px; }
-    .col-law .law-widget .law-text-box { font-size: 54px; padding: 26px 28px; max-height: 700px; line-height: 1.8; }
-    .col-law .highlight-card .hl-front { font-size: 60px; line-height: 1.5; }
-    .col-law .highlight-card .hl-front.answered { font-size: 48px; }
-    .col-law .highlight-card .hl-back { font-size: 51px; max-height: 600px; line-height: 1.7; }
-    .col-law .highlight-card .hl-law { font-size: 45px; }
-    .col-law .highlight-card .hl-hint { font-size: 42px; }
+    .col-law .law-widget, .col-law .highlight-card { padding: 16px; border-radius: 14px; margin-bottom: 12px; }
+    .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 11.5px; margin-bottom: 8px; }
+    .col-law .law-subject-tag { font-size: 11px; padding: 3px 9px; }
+    .col-law .daily-count-badge { font-size: 11px; padding: 2px 8px; }
+    .col-law .law-widget .law-art { font-size: 16px; margin-bottom: 8px; }
+    .col-law .law-widget .law-text-box { font-size: 14px; padding: 12px 14px; max-height: 260px; line-height: 1.7; }
+    .col-law .highlight-card .hl-front { font-size: 15px; line-height: 1.5; }
+    .col-law .highlight-card .hl-front.answered { font-size: 12.5px; }
+    .col-law .highlight-card .hl-back { font-size: 13px; max-height: 240px; line-height: 1.6; }
+    .col-law .highlight-card .hl-law { font-size: 12px; }
+    .col-law .highlight-card .hl-hint { font-size: 11.5px; }
 
     /* 時間軸畫面：桌面版改成左中右三欄——左＝待辦快捷、中＝列表／方塊／月曆、右＝習慣快捷 */
     #timelog { display: flex; flex-direction: column; }
     #timelog .timelog-top { flex-shrink: 0; }
-    #timelog .timelog-3row { display: flex; gap: 30px; flex: 1; min-height: 0; padding: 0 30px 30px; align-items: flex-start; }
+    #timelog .timelog-3row { display: flex; gap: 16px; flex: 1; min-height: 0; padding: 0 20px 20px; align-items: flex-start; }
     #timelog #timelogTodoSlot, #timelog #timelogHabitSlot {
-      flex: 0 0 600px; max-height: none; overflow-y: visible;
+      flex: 0 0 320px; max-height: none; overflow-y: visible;
     }
     #timelog .timelog-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-    .brand-strip { font-size: 42px; padding: 24px 30px; }
-    .day-streak-row .day { font-size: 48px; }
-    .topbar .streak { font-size: 45px; }
-    .countdown-banner .item .num { font-size: 138px; }
-    .countdown-banner .item .lbl { font-size: 39px; }
-    .checkin-btn { font-size: 42px; padding: 18px 26px; }
+    .brand-strip { font-size: 13px; padding: 12px 24px; }
+    .day-streak-row .day { font-size: 14px; }
+    .topbar .streak { font-size: 13px; }
+    .countdown-banner .item .num { font-size: 40px; }
+    .countdown-banner .item .lbl { font-size: 12px; }
+    .checkin-btn { font-size: 13px; padding: 10px 16px; }
     #timelog .timelog-body, #timelog .block-scroll, #timelog .cal-scroll { max-width: none; }
   }
 
