@@ -43,9 +43,44 @@
     position: relative;
   }
 
-  /* ---------- 較寬螢幕：內容區域稍微加寬，背景維持跟App一樣的淺色，不做花俏效果 ---------- */
+  /* ---------- 較寬螢幕：滿版顯示，字級跟著放大，不要維持手機那種擠壓大小 ---------- */
   @media (min-width: 900px){
-    .app { max-width: 640px; }
+    .app { max-width: 1300px; }
+
+    /* 待辦事項／習慣打卡／時間軸列表等「全螢幕畫面」原本鎖死480px寬度是給手機用的，
+       桌面版放寬，不要讓內容擠在畫面中間、兩側留白 */
+    .deck-body, .timelog-body { max-width: 1100px; }
+
+    .home-3col { gap: 18px; padding: 0 24px 18px; }
+    .col-title { font-size: 15px; margin-bottom: 12px; }
+    .col-stat { font-size: 13.5px; padding: 8px 10px; margin-bottom: 12px; }
+    .mini-todo-item, .mini-habit-item { padding: 9px 6px; gap: 10px; }
+    .mini-todo-item .mini-check, .mini-habit-item .mini-check { width: 20px; height: 20px; }
+    .mini-todo-item .mini-txt, .mini-habit-item .mini-txt { font-size: 15px; white-space: normal; }
+    .mini-more { font-size: 13.5px; margin-top: 10px; }
+    .mini-empty { font-size: 15px; padding: 20px 4px; }
+
+    .col-law .law-widget, .col-law .highlight-card { padding: 18px; border-radius: 16px; margin-bottom: 14px; }
+    .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 12.5px; margin-bottom: 10px; }
+    .col-law .law-subject-tag { font-size: 12px; padding: 4px 10px; }
+    .col-law .daily-count-badge { font-size: 11.5px; padding: 2px 8px; }
+    .col-law .law-widget .law-art { font-size: 18px; margin-bottom: 10px; }
+    .col-law .law-widget .law-text-box { font-size: 15px; padding: 13px 14px; max-height: 260px; }
+    .col-law .highlight-card .hl-front { font-size: 16px; }
+    .col-law .highlight-card .hl-front.answered { font-size: 13.5px; }
+    .col-law .highlight-card .hl-back { font-size: 14px; max-height: 240px; }
+    .col-law .highlight-card .hl-law { font-size: 13px; }
+    .col-law .highlight-card .hl-hint { font-size: 12.5px; }
+
+    /* 時間軸畫面：桌面版改成左中右三欄——左＝待辦快捷、中＝列表／方塊／月曆、右＝習慣快捷 */
+    #timelog { display: flex; flex-direction: column; }
+    #timelog .timelog-top { flex-shrink: 0; }
+    #timelog .timelog-3row { display: flex; gap: 16px; flex: 1; min-height: 0; padding: 0 20px 20px; align-items: flex-start; }
+    #timelog #timelogTodoSlot, #timelog #timelogHabitSlot {
+      flex: 0 0 300px; max-height: none; overflow-y: visible;
+    }
+    #timelog .timelog-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    #timelog .timelog-body, #timelog .block-scroll, #timelog .cal-scroll { max-width: none; }
   }
 
   /* ---------- Brand strip ---------- */
@@ -312,6 +347,8 @@
 
   /* ---------- 時間軸頂部：待辦／習慣快捷區塊 ---------- */
   .tl-quick-wrap:empty { display: none; }
+  .timelog-3row { display: block; }
+  .timelog-main { display: block; min-width: 0; }
   .tl-quick-section {
     margin: 0 16px 12px; background: var(--card); border: 1px solid var(--line);
     border-radius: 16px; padding: 12px 14px;
@@ -1094,32 +1131,36 @@
     <button class="checkin-btn" onclick="exportTodayIcs()" style="margin-right:6px;">⤓ 匯出</button>
     <button class="checkin-btn" onclick="openCheckin()">⏱ 打卡</button>
   </div>
-  <div class="tl-quick-wrap" id="timelogTodoSlot"></div>
-  <div class="tl-quick-wrap" id="timelogHabitSlot"></div>
-  <div class="timelog-tabs">
-    <button id="tabListBtn" class="active" onclick="switchTimelogView('list')">列表</button>
-    <button id="tabBlockBtn" onclick="switchTimelogView('block')">方塊</button>
-    <button id="tabCalBtn" onclick="switchTimelogView('calendar')">📅 月曆</button>
-  </div>
-  <div class="timelog-body" id="timelogBody"></div>
-  <div class="block-scroll" id="blockScroll" style="display:none;">
-    <div class="block-hint">拖動方塊調整時間，拖底部邊緣調整長短</div>
-    <div class="block-wrap">
-      <div class="block-hours" id="blockHours"></div>
-      <div class="block-track" id="blockTrack"></div>
+  <div class="timelog-3row">
+    <div class="tl-quick-wrap" id="timelogTodoSlot"></div>
+    <div class="timelog-main">
+      <div class="timelog-tabs">
+        <button id="tabListBtn" class="active" onclick="switchTimelogView('list')">列表</button>
+        <button id="tabBlockBtn" onclick="switchTimelogView('block')">方塊</button>
+        <button id="tabCalBtn" onclick="switchTimelogView('calendar')">📅 月曆</button>
+      </div>
+      <div class="timelog-body" id="timelogBody"></div>
+      <div class="block-scroll" id="blockScroll" style="display:none;">
+        <div class="block-hint">拖動方塊調整時間，拖底部邊緣調整長短</div>
+        <div class="block-wrap">
+          <div class="block-hours" id="blockHours"></div>
+          <div class="block-track" id="blockTrack"></div>
+        </div>
+      </div>
+      <div class="cal-scroll" id="calScroll" style="display:none;">
+        <div class="cal-header">
+          <button onclick="shiftCalMonth(-1)">‹</button>
+          <span id="calMonthLabel"></span>
+          <button onclick="shiftCalMonth(1)">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div id="calDayEntries" style="padding:0 16px;"></div>
+      </div>
     </div>
-  </div>
-  <div class="cal-scroll" id="calScroll" style="display:none;">
-    <div class="cal-header">
-      <button onclick="shiftCalMonth(-1)">‹</button>
-      <span id="calMonthLabel"></span>
-      <button onclick="shiftCalMonth(1)">›</button>
-    </div>
-    <div class="cal-weekdays">
-      <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div id="calDayEntries" style="padding:0 16px;"></div>
+    <div class="tl-quick-wrap" id="timelogHabitSlot"></div>
   </div>
 </div>
 
