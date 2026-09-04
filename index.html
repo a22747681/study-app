@@ -234,6 +234,7 @@
   .todo-item .todo-meta { display: flex; gap: 6px; margin-top: 5px; align-items: center; flex-wrap: wrap; }
   .todo-item .todo-due { font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 100px; background: var(--bg); color: var(--ink-3); }
   .todo-item .todo-due.overdue { background: #FBEAEA; color: #B23B3B; }
+  .todo-postpone-link { font-size: 10.5px; font-weight: 800; color: var(--accent); cursor: pointer; }
   .todo-item .todo-pri { font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 100px; }
   .todo-item .todo-pri.high { background: #FBEAEA; color: #B23B3B; }
   .todo-item .todo-pri.mid { background: #F3EFE3; color: #8C7A3B; }
@@ -324,29 +325,74 @@
   .tl-quick-streak { font-size: 10.5px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
   .tl-quick-more { text-align: center; font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 6px; cursor: pointer; }
 
-  /* ---------- 首頁：時間軸入口卡 ---------- */
-  .home-timeline-card {
-    margin: 4px 24px 16px; background: var(--navy-deep); border-radius: 18px;
-    padding: 16px 18px; cursor: pointer;
-    display: flex; align-items: center; gap: 12px;
+  /* ---------- 首頁：左中右三欄（待辦＋今日筆數／法條＋考點／習慣＋成就） ---------- */
+  .home-3col { display: flex; gap: 6px; padding: 0 10px 16px; align-items: flex-start; }
+  .home-3col > div {
+    flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 8px 6px;
   }
-  .home-timeline-card .htc-icon { font-size: 24px; flex-shrink: 0; }
-  .home-timeline-card .htc-txt { flex: 1; min-width: 0; }
-  .home-timeline-card .htc-t1 { font-size: 15px; font-weight: 800; color: #fff; }
-  .home-timeline-card .htc-t2 { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 3px; line-height: 1.5; }
-  .home-timeline-card .htc-arrow { font-size: 18px; color: var(--gold); flex-shrink: 0; }
+  .home-3col .col-law { flex: 1.4; }
+  .col-title {
+    font-size: 10.5px; font-weight: 800; color: var(--ink-3); text-align: center;
+    margin-bottom: 6px; cursor: pointer; letter-spacing: .01em;
+  }
+  .col-stat {
+    font-size: 9.5px; font-weight: 800; color: var(--accent); text-align: center;
+    background: var(--accent-tint); border-radius: 100px; padding: 3px 4px; margin-bottom: 6px; cursor: pointer;
+  }
+  .mini-todo-item, .mini-habit-item {
+    display: flex; align-items: center; gap: 4px; padding: 4px 2px; cursor: pointer;
+  }
+  .mini-todo-item .mini-check, .mini-habit-item .mini-check {
+    width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--line);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 8px; color: #fff;
+  }
+  .mini-habit-item .mini-check.done { background: var(--accent); border-color: var(--accent); }
+  .mini-todo-item .mini-txt, .mini-habit-item .mini-txt {
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 10px; font-weight: 700; color: var(--ink);
+  }
+  .mini-empty { font-size: 10px; color: var(--ink-3); text-align: center; padding: 10px 2px; line-height: 1.5; }
+  .mini-more { font-size: 9.5px; color: var(--accent); font-weight: 800; text-align: center; margin-top: 4px; cursor: pointer; }
 
-  /* ---------- 首頁：成就與獎勵入口卡 ---------- */
-  .home-achieve-card {
-    margin: 4px 24px 16px; background: linear-gradient(135deg, #5B3A8E, #2E1F4E);
-    border-radius: 18px; padding: 16px 18px; cursor: pointer;
-    display: flex; align-items: center; gap: 12px;
+  /* 法條與考點縮進中間欄：覆蓋原本給首頁全寬用的間距跟字級 */
+  .col-law .law-widget, .col-law .highlight-card { margin: 0 0 8px; padding: 8px; border-radius: 10px; }
+  .col-law .law-widget-label, .col-law .highlight-card .hl-label { font-size: 8.5px; margin-bottom: 5px; }
+  .col-law .law-header-row { margin-bottom: 3px; gap: 4px; }
+  .col-law .law-subject-tag { font-size: 8px; padding: 2px 6px; }
+  .col-law .daily-count-badge { font-size: 8px; padding: 1px 5px; }
+  .col-law .law-widget .law-art { font-size: 11px; margin-bottom: 5px; line-height: 1.35; }
+  .col-law .law-widget .law-text-box { font-size: 9.5px; padding: 7px 8px; line-height: 1.5; max-height: 110px; overflow-y: auto; }
+  .col-law .highlight-card .hl-front { font-size: 10.5px; line-height: 1.4; }
+  .col-law .highlight-card .hl-front.answered { font-size: 9.5px; }
+  .col-law .highlight-card .hl-back { font-size: 9.5px; margin-top: 6px; padding-top: 6px; line-height: 1.5; max-height: 100px; overflow-y: auto; }
+  .col-law .highlight-card .hl-law { font-size: 9px; margin-top: 5px; }
+  .col-law .highlight-card .hl-hint { font-size: 9px; margin-top: 6px; }
+
+  /* ---------- 時間軸畫面：月曆分頁（全螢幕大版，字級正常） ---------- */
+  .cal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 6px; font-size: 15px; font-weight: 800; color: var(--ink); }
+  .cal-header button { background: none; border: none; font-size: 22px; color: var(--ink-3); padding: 0 10px; }
+  .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); padding: 0 16px; margin-bottom: 4px; }
+  .cal-weekdays span { font-size: 11px; color: var(--ink-3); text-align: center; font-weight: 700; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; padding: 0 16px; margin-bottom: 18px; }
+  .cal-cell {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; border-radius: 10px; position: relative; cursor: pointer; color: var(--ink-2);
   }
-  .home-achieve-card .htc-icon { font-size: 24px; flex-shrink: 0; }
-  .home-achieve-card .htc-txt { flex: 1; min-width: 0; }
-  .home-achieve-card .htc-t1 { font-size: 15px; font-weight: 800; color: #fff; }
-  .home-achieve-card .htc-t2 { font-size: 11px; color: rgba(255,255,255,.75); margin-top: 3px; line-height: 1.5; }
-  .home-achieve-card .htc-arrow { font-size: 18px; color: var(--gold); flex-shrink: 0; }
+  .cal-cell.today { border: 2px solid var(--accent); font-weight: 800; }
+  .cal-cell.selected { background: var(--accent); color: #fff; font-weight: 800; }
+  .cal-cell.has-entry::after {
+    content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  }
+  .cal-cell.selected.has-entry::after { background: #fff; }
+  .cal-cell.other-month { visibility: hidden; }
+  .cal-day-title { font-size: 12.5px; font-weight: 800; color: var(--ink-3); margin-bottom: 8px; }
+  .cal-day-entry { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .cal-day-entry .cde-time { font-weight: 800; color: var(--accent); flex-shrink: 0; width: 42px; }
+  .cal-day-entry .cde-label { color: var(--ink); }
+  .cal-day-empty { font-size: 13px; color: var(--ink-3); text-align: center; padding: 30px 0; }
 
   /* ---------- 成就畫面：分頁 ---------- */
   .achieve-tabs { display: flex; gap: 8px; padding: 14px 16px 4px; }
@@ -905,29 +951,24 @@
 
   <div id="routinePromptSlot"></div>
 
-  <div class="home-timeline-card" onclick="openTimelog()">
-    <div class="htc-icon">🕐</div>
-    <div class="htc-txt">
-      <div class="htc-t1" id="homeTimelineSummary">今天的時間軸</div>
-      <div class="htc-t2">點開查看列表／方塊檢視、打卡、自由新增紀錄</div>
+  <div class="home-3col">
+    <div class="col-todo">
+      <div class="col-title" onclick="openTodos()">✅ 待辦</div>
+      <div class="col-stat" id="miniTodayCount" onclick="openTimelog()">今天 0 筆</div>
+      <div id="miniTodoList"></div>
     </div>
-    <div class="htc-arrow">›</div>
+    <div class="col-law">
+      <div class="col-title">📜 法條與考點</div>
+      <div id="dailyLawSlot"></div>
+      <div id="dailyHighlightSlot"></div>
+    </div>
+    <div class="col-habit">
+      <div class="col-title" onclick="openHabits()">🔥 習慣</div>
+      <div id="miniHabitList"></div>
+      <div class="col-stat" id="miniAchieveStat" onclick="openAchievements()">🏆 成就</div>
+    </div>
   </div>
 
-  <div class="home-achieve-card" onclick="openAchievements()">
-    <div class="htc-icon">🏆</div>
-    <div class="htc-txt">
-      <div class="htc-t1">成就與獎勵</div>
-      <div class="htc-t2" id="homeAchieveSummary">徽章收藏牆・娛樂兌換券</div>
-    </div>
-    <div class="htc-arrow">›</div>
-  </div>
-
-  <div id="homeHabitSlot"></div>
-  <div id="homeTodoSlot"></div>
-
-  <div id="dailyLawSlot"></div>
-  <div id="dailyHighlightSlot"></div>
   <div id="weakSpotSlot"></div>
   <!-- 今日排程功能已移除，改為待辦事項＋習慣打卡 -->
 
@@ -1058,6 +1099,7 @@
   <div class="timelog-tabs">
     <button id="tabListBtn" class="active" onclick="switchTimelogView('list')">列表</button>
     <button id="tabBlockBtn" onclick="switchTimelogView('block')">方塊</button>
+    <button id="tabCalBtn" onclick="switchTimelogView('calendar')">📅 月曆</button>
   </div>
   <div class="timelog-body" id="timelogBody"></div>
   <div class="block-scroll" id="blockScroll" style="display:none;">
@@ -1066,6 +1108,18 @@
       <div class="block-hours" id="blockHours"></div>
       <div class="block-track" id="blockTrack"></div>
     </div>
+  </div>
+  <div class="cal-scroll" id="calScroll" style="display:none;">
+    <div class="cal-header">
+      <button onclick="shiftCalMonth(-1)">‹</button>
+      <span id="calMonthLabel"></span>
+      <button onclick="shiftCalMonth(1)">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div id="calDayEntries" style="padding:0 16px;"></div>
   </div>
 </div>
 
@@ -1252,6 +1306,25 @@
     <input type="text" id="subtaskTextInput" placeholder="例如：先看爭點整理">
   </div>
   <button class="btn-primary" onclick="saveNewSubtask()">新增</button>
+</div>
+
+<!-- 待辦事項延後選單 -->
+<div class="checkin-scrim" id="postponeScrim" onclick="closePostponeSheet()"></div>
+<div class="checkin-sheet" id="postponeSheet">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+    <h3>延後到什麼時候？</h3>
+    <button onclick="closePostponeSheet()" style="background:none; border:none; font-size:22px; color:var(--ink-3); line-height:1; width:44px; height:44px; display:flex; align-items:center; justify-content:center; margin:-10px -10px 0 0; flex-shrink:0;">✕</button>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+    <button class="btn-primary" style="background:var(--card); color:var(--ink-2); border:1px solid var(--line); text-align:left; padding:13px 16px;" onclick="postponeByDays(1)">明天</button>
+    <button class="btn-primary" style="background:var(--card); color:var(--ink-2); border:1px solid var(--line); text-align:left; padding:13px 16px;" onclick="postponeByDays(3)">3天後</button>
+    <button class="btn-primary" style="background:var(--card); color:var(--ink-2); border:1px solid var(--line); text-align:left; padding:13px 16px;" onclick="postponeByDays(7)">一週後</button>
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:14px;">
+    <label>或自訂日期</label>
+    <input type="date" id="postponeCustomDateInput">
+  </div>
+  <button class="btn-primary" onclick="postponeToCustomDate()">確定延後到這天</button>
 </div>
 
 <!-- 成就與獎勵畫面 -->
@@ -5493,9 +5566,9 @@ async function renderTimelog(){
 }
 
 async function renderTimelogTodoWidget(){
-  const slots = ['timelogTodoSlot', 'homeTodoSlot'].map(id => document.getElementById(id)).filter(Boolean);
+  renderMiniTodoColumn();
+  const slots = ['timelogTodoSlot'].map(id => document.getElementById(id)).filter(Boolean);
   if(!slots.length) return;
-  renderHomeTimelineSummary();
   const list = await loadTodos();
   const pending = list.filter(t => !t.done).sort((a,b) => {
     const pd = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
@@ -5531,7 +5604,7 @@ async function renderTimelogTodoWidget(){
               </div>
             ` : ''}
           </div>
-          ${todoDueBadge(t.due)}
+          ${todoDueBadge(t.due, t.id)}
         </div>
       `;
       }).join('')}
@@ -5542,9 +5615,9 @@ async function renderTimelogTodoWidget(){
 }
 
 async function renderTimelogHabitWidget(){
-  const slots = ['timelogHabitSlot', 'homeHabitSlot'].map(id => document.getElementById(id)).filter(Boolean);
+  renderMiniHabitColumn();
+  const slots = ['timelogHabitSlot'].map(id => document.getElementById(id)).filter(Boolean);
   if(!slots.length) return;
-  renderHomeTimelineSummary();
   const list = await loadHabits();
   if(!list.length){
     slots.forEach(slot => slot.innerHTML = '');
@@ -5646,9 +5719,12 @@ function switchTimelogView(view){
   currentTimelogView = view;
   document.getElementById('tabListBtn').classList.toggle('active', view === 'list');
   document.getElementById('tabBlockBtn').classList.toggle('active', view === 'block');
+  document.getElementById('tabCalBtn').classList.toggle('active', view === 'calendar');
   document.getElementById('timelogBody').style.display = view === 'list' ? '' : 'none';
   document.getElementById('blockScroll').style.display = view === 'block' ? 'block' : 'none';
+  document.getElementById('calScroll').style.display = view === 'calendar' ? 'block' : 'none';
   if(view === 'block') renderTimelog();
+  if(view === 'calendar'){ renderCalendar(); renderCalDayEntries(); }
 }
 
 /* ---------- 方塊模式：渲染與拖動 ---------- */
@@ -6639,7 +6715,7 @@ const OVERLAY_IDS_BY_PRIORITY = [
   'essayResultView', 'essayWriteView', 'essayListView',
   'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'routineView', 'linksView',
   'timelog', 'backupView', 'quizPicker',
-  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addRoutineSheet', 'answerRoutineSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
+  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'postponeSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addRoutineSheet', 'answerRoutineSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
   'drawer'
 ];
 const OVERLAY_SCRIM_MAP = {
@@ -6650,6 +6726,7 @@ const OVERLAY_SCRIM_MAP = {
   habitNoteSheet: 'habitNoteScrim',
   todoCompletionNoteSheet: 'todoCompletionNoteScrim',
   addSubtaskSheet: 'addSubtaskScrim',
+  postponeSheet: 'postponeScrim',
   addCustomCheckinSheet: 'addCustomCheckinScrim',
   addRoutineSheet: 'addRoutineScrim',
   answerRoutineSheet: 'answerRoutineScrim',
@@ -6981,11 +7058,11 @@ async function checkBadgeUnlocks(currentStreak){
 }
 
 async function renderAchievementsEntry(){
-  const el = document.getElementById('homeAchieveSummary');
+  const el = document.getElementById('miniAchieveStat');
   if(!el) return;
   const vouchers = await loadVouchers();
   const unusedCount = vouchers.filter(v => !v.used).length;
-  el.textContent = unusedCount > 0 ? `🎟️ 有 ${unusedCount} 張兌換券還沒用` : '徽章收藏牆・娛樂兌換券';
+  el.textContent = unusedCount > 0 ? `🎟️ ${unusedCount} 張兌換券` : '🏆 成就';
 }
 
 let achieveTab = 'badges';
@@ -7127,6 +7204,45 @@ async function deleteTodo(id){
   renderTimelogTodoWidget();
 }
 
+/* ---------- 待辦事項延後 ---------- */
+let pendingPostponeTodoId = null;
+function openPostponeSheet(id){
+  pendingPostponeTodoId = id;
+  document.getElementById('postponeCustomDateInput').value = '';
+  document.getElementById('postponeSheet').classList.add('open');
+  document.getElementById('postponeScrim').classList.add('open');
+}
+function closePostponeSheet(){
+  document.getElementById('postponeSheet').classList.remove('open');
+  document.getElementById('postponeScrim').classList.remove('open');
+}
+async function applyPostpone(newDate){
+  const id = pendingPostponeTodoId;
+  const list = await loadTodos();
+  const item = list.find(t => t.id === id);
+  if(!item) return;
+  item.due = newDate;
+  await saveTodos(list);
+  closePostponeSheet();
+  showCheckinToast('已延後到 ' + newDate);
+  await renderTodosFull();
+  renderTimelogTodoWidget();
+}
+async function postponeByDays(days){
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const newDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  await applyPostpone(newDate);
+}
+async function postponeToCustomDate(){
+  const val = document.getElementById('postponeCustomDateInput').value;
+  if(!val){
+    showCheckinToast('請先選一個日期');
+    return;
+  }
+  await applyPostpone(val);
+}
+
 /* ---------- 待辦事項的子項目 ---------- */
 let pendingSubtaskTodoId = null;
 function openAddSubtask(todoId){
@@ -7255,11 +7371,12 @@ async function skipTodoCompletionNote(){
   if(mode === 'new') await finalizeTodoCompletion(id, null);
 }
 
-function todoDueBadge(due){
+function todoDueBadge(due, id){
   if(!due) return '';
   const today = todayKey();
   const overdue = due < today;
-  return `<span class="todo-due ${overdue ? 'overdue' : ''}">${overdue ? '已逾期 ' : ''}${due}</span>`;
+  const postponeLink = (overdue && id) ? ` <span class="todo-postpone-link" onclick="event.stopPropagation(); openPostponeSheet('${id}')">延後 ›</span>` : '';
+  return `<span class="todo-due ${overdue ? 'overdue' : ''}">${overdue ? '已逾期 ' : ''}${due}</span>${postponeLink}`;
 }
 async function renderTodosFull(){
   const list = await loadTodos();
@@ -7286,7 +7403,7 @@ async function renderTodosFull(){
         ${t.done && t.completionNote ? `<div class="todo-note todo-completion-note">✅ ${t.completionNote}</div>` : ''}
         <div class="todo-meta">
           <span class="todo-pri ${t.priority}">優先度：${PRIORITY_LABEL[t.priority]}</span>
-          ${todoDueBadge(t.due)}
+          ${todoDueBadge(t.due, t.id)}
           ${subtasks.length ? `<span class="todo-sub-progress">${subDone}/${subtasks.length} 子項目</span>` : ''}
         </div>
       </div>
@@ -8141,20 +8258,156 @@ async function renderWeakSpot(){
 }
 
 /* 首頁時間軸入口卡：顯示今天已記錄幾筆，讓入口本身也帶一點狀態感 */
-async function renderHomeTimelineSummary(){
-  const el = document.getElementById('homeTimelineSummary');
-  if(!el) return;
+/* =======================================================================
+   首頁左中右三欄：待辦（左）／時間軸月曆（中）／習慣（右）
+   ======================================================================= */
+async function loadLogForDate(dateKey){
   try {
-    const raw = await loadTodayLog();
-    const count = raw.length;
-    el.textContent = count > 0 ? `今天已記錄 ${count} 筆` : '今天的時間軸';
+    const r = await window.storage.get('timelog:' + dateKey, false);
+    return r ? JSON.parse(r.value) : [];
   } catch(e){
-    el.textContent = '今天的時間軸';
+    return [];
   }
+}
+
+/* 時間軸有異動時（打卡／編輯／刪除）呼叫：更新左欄「今天N筆」統計，
+   如果目前時間軸畫面停在月曆分頁且選的是今天，順便刷新月曆跟當天清單 */
+async function renderHomeTimelineSummary(){
+  const el = document.getElementById('miniTodayCount');
+  if(el){
+    try {
+      const raw = await loadTodayLog();
+      el.textContent = `今天 ${raw.length} 筆`;
+    } catch(e){
+      el.textContent = '今天 0 筆';
+    }
+  }
+  if(typeof calSelectedDate !== 'undefined' && calSelectedDate === todayKey()){
+    if(document.getElementById('calGrid')) await renderCalendar();
+    if(document.getElementById('calDayEntries')) await renderCalDayEntries();
+  }
+}
+
+async function renderMiniTodoColumn(){
+  const wrap = document.getElementById('miniTodoList');
+  if(!wrap) return;
+  const list = await loadTodos();
+  const pending = list.filter(t => !t.done).sort((a,b) => {
+    const pd = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+    if(pd !== 0) return pd;
+    return (a.due || '9999') < (b.due || '9999') ? -1 : 1;
+  });
+  if(!pending.length){
+    wrap.innerHTML = `<div class="mini-empty">沒有待辦</div>`;
+    return;
+  }
+  const shown = pending.slice(0, 6);
+  wrap.innerHTML = shown.map(t => `
+    <div class="mini-todo-item" onclick="toggleTodoDone('${t.id}')">
+      <div class="mini-check"></div>
+      <div class="mini-txt">${t.text}</div>
+    </div>
+  `).join('') + `<div class="mini-more" onclick="openTodos()">${pending.length > shown.length ? `+${pending.length - shown.length} 項` : '更多'} ›</div>`;
+}
+
+async function renderMiniHabitColumn(){
+  const wrap = document.getElementById('miniHabitList');
+  if(!wrap) return;
+  const list = await loadHabits();
+  if(!list.length){
+    wrap.innerHTML = `<div class="mini-empty">沒有習慣</div>`;
+    return;
+  }
+  const logs = await loadHabitLogs();
+  const counts = await loadHabitCounts();
+  const todayDone = logs[todayKey()] || [];
+  const shown = list.slice(0, 6);
+  wrap.innerHTML = shown.map(h => {
+    if(h.isCounter){
+      const count = (counts[todayKey()] && counts[todayKey()][h.id]) || 0;
+      return `
+        <div class="mini-habit-item" onclick="incrementHabitCount('${h.id}')">
+          <div class="mini-check">🔢</div>
+          <div class="mini-txt">${h.name}（${count}）</div>
+        </div>
+      `;
+    }
+    const done = todayDone.includes(h.id);
+    return `
+      <div class="mini-habit-item" onclick="toggleHabitToday('${h.id}')">
+        <div class="mini-check ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+        <div class="mini-txt">${h.name}</div>
+      </div>
+    `;
+  }).join('') + `<div class="mini-more" onclick="openHabits()">${list.length > shown.length ? `+${list.length - shown.length} 項` : '更多'} ›</div>`;
+}
+
+let calViewMonth = new Date();
+let calSelectedDate = todayKey();
+
+function shiftCalMonth(delta){
+  calViewMonth = new Date(calViewMonth.getFullYear(), calViewMonth.getMonth() + delta, 1);
+  renderCalendar();
+}
+
+async function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  const label = document.getElementById('calMonthLabel');
+  if(!grid || !label) return;
+  const year = calViewMonth.getFullYear();
+  const month = calViewMonth.getMonth();
+  label.textContent = `${year}年 ${month + 1}月`;
+
+  let entryDates = new Set();
+  try {
+    const listResult = await window.storage.list('timelog:', false);
+    const keys = listResult ? listResult.keys : [];
+    keys.forEach(k => entryDates.add(k.replace('timelog:', '')));
+  } catch(e){}
+
+  const firstDay = new Date(year, month, 1);
+  const startWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayStr = todayKey();
+
+  let cells = [];
+  for(let i = 0; i < startWeekday; i++) cells.push(null);
+  for(let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  grid.innerHTML = cells.map(d => {
+    if(d === null) return `<div class="cal-cell other-month"></div>`;
+    const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === calSelectedDate;
+    const hasEntry = entryDates.has(dateStr);
+    return `<div class="cal-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${hasEntry ? 'has-entry' : ''}" onclick="selectCalendarDay('${dateStr}')">${d}</div>`;
+  }).join('');
+}
+
+async function selectCalendarDay(dateStr){
+  calSelectedDate = dateStr;
+  await renderCalendar();
+  await renderCalDayEntries();
+}
+
+async function renderCalDayEntries(){
+  const wrap = document.getElementById('calDayEntries');
+  if(!wrap) return;
+  const raw = await loadLogForDate(calSelectedDate);
+  const entries = raw.map(normEntry).sort((a,b) => a.startTs - b.startTs);
+  if(!entries.length){
+    wrap.innerHTML = `<div class="cal-day-empty">${calSelectedDate} 沒有紀錄</div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="cal-day-title">${calSelectedDate}</div>` + entries.map(e => `
+    <div class="cal-day-entry"><span class="cde-time">${formatHM(e.startTs)}</span><span class="cde-label">${e.label}</span></div>
+  `).join('');
 }
 
 renderDailyLaw(true);
 renderDailyHighlight(true);
+renderMiniTodoColumn();
+renderMiniHabitColumn();
 renderHomeTimelineSummary();
 renderWeakSpot();
 loadWrongAnswers().then(updateDiagMenuSub);
