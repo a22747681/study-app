@@ -1,0 +1,261 @@
+{
+  "exportedAt": "2026-09-04T01:15:55.678Z",
+  "timelogs": {
+    "timelog:2026-09-02": [
+      {
+        "startTs": 1788297600000,
+        "endTs": 1788297600000,
+        "type": "manual",
+        "label": "📝 起床",
+        "detail": null
+      },
+      {
+        "startTs": 1788297900000,
+        "endTs": 1788299100000,
+        "type": "manual",
+        "label": "📝 洗澡（腦袋開機）",
+        "detail": null
+      },
+      {
+        "startTs": 1788299160000,
+        "endTs": 1788300600000,
+        "type": "manual",
+        "label": "📝 吹頭髮、準備出門",
+        "detail": null
+      },
+      {
+        "startTs": 1788301500000,
+        "endTs": 1788306000000,
+        "type": "manual",
+        "label": "🚌 搭車中（717國道客運到永寧轉運站）",
+        "detail": null
+      },
+      {
+        "startTs": 1788306000000,
+        "endTs": 1788307620000,
+        "type": "manual",
+        "label": "🚌 搭車中（永寧捷運站到西門捷運站）",
+        "detail": null
+      },
+      {
+        "startTs": 1788307680000,
+        "endTs": 1788307980000,
+        "type": "manual",
+        "label": "🚶 走路到公司（今天沒買早餐）",
+        "detail": null
+      },
+      {
+        "startTs": 1788307980000,
+        "endTs": 1788307980000,
+        "type": "manual",
+        "label": "🏢 到公司",
+        "detail": null
+      },
+      {
+        "startTs": 1788312390379,
+        "endTs": 1788312390379,
+        "type": "manual",
+        "label": "✅ 【刑事訴訟法】辯護人",
+        "detail": null
+      },
+      {
+        "startTs": 1788314347532,
+        "endTs": 1788314347532,
+        "type": "manual",
+        "label": "🔢 喝水（第2次）",
+        "detail": null
+      },
+      {
+        "startTs": 1788316440000,
+        "endTs": 1788316440000,
+        "type": "manual",
+        "label": "📝 專心工作",
+        "detail": null
+      },
+      {
+        "startTs": 1788316509249,
+        "endTs": 1788316509249,
+        "type": "manual",
+        "label": "🔢 喝水（第3次）",
+        "detail": null
+      },
+      {
+        "startTs": 1788321000000,
+        "endTs": 1788321000000,
+        "type": "manual",
+        "label": "📝 休息耍廢時間",
+        "detail": null
+      },
+      {
+        "startTs": 1788331920000,
+        "endTs": 1788331920000,
+        "type": "manual",
+        "label": "📝 專心工作",
+        "detail": null
+      },
+      {
+        "startTs": 1788334072443,
+        "endTs": 1788334072443,
+        "type": "manual",
+        "label": "😴 睏、打瞌睡",
+        "detail": null
+      },
+      {
+        "startTs": 1788338400000,
+        "endTs": 1788338400000,
+        "type": "manual",
+        "label": "📝 📝 休息耍廢時間",
+        "detail": null
+      }
+    ],
+    "timelog:2026-09-04": [
+      {
+        "startTs": 1788472200000,
+        "endTs": 1788472200000,
+        "type": "manual",
+        "label": "📝 起床",
+        "detail": null
+      },
+      {
+        "startTs": 1788472200000,
+        "endTs": 1788472200000,
+        "type": "manual",
+        "label": "🔥 早起（05：50（好睏，賴床））",
+        "detail": null
+      },
+      {
+        "startTs": 1788480780000,
+        "endTs": 1788480780000,
+        "type": "manual",
+        "label": "🏢 到公司",
+        "detail": null
+      }
+    ]
+  },
+  "activeTimers": {},
+  "personalFlashcards": null,
+  "personalNotes": null,
+  "personalEssays": null,
+  "wrongAnswers": null,
+  "streakShields": {
+    "count": 0,
+    "earnedAtStreak": 0
+  },
+  "seenStreakMilestones": null,
+  "todos": [
+    {
+      "id": "todo-1788312366083",
+      "text": "【刑事訴訟法】辯護人",
+      "due": "2026-09-02",
+      "priority": "high",
+      "note": "第一遍細看\n第二遍記憶爭點\n第三遍整理筆記+回想\n回家的時候練習考古題",
+      "hasCompletionNote": true,
+      "completionNote": null,
+      "done": false,
+      "doneAt": null,
+      "subtasks": [
+        {
+          "id": "sub-1788312383843",
+          "text": "第一遍細看",
+          "done": true
+        },
+        {
+          "id": "sub-1788312396035",
+          "text": "第二遍記憶爭點",
+          "done": false
+        },
+        {
+          "id": "sub-1788312407443",
+          "text": "第三遍整理筆記+回想",
+          "done": false
+        },
+        {
+          "id": "sub-1788312410363",
+          "text": "回家的時候練習考古題",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "todo-1788484479582",
+      "text": "【讀享｜證明羊｜憲法】法律保留原則與授權明確性原則",
+      "due": null,
+      "priority": "high",
+      "note": null,
+      "hasCompletionNote": true,
+      "completionNote": null,
+      "done": false,
+      "doneAt": null,
+      "subtasks": [
+        {
+          "id": "sub-1788484488758",
+          "text": "第一遍細看講義",
+          "done": false
+        },
+        {
+          "id": "sub-1788484499357",
+          "text": "第二遍記憶爭點",
+          "done": false
+        },
+        {
+          "id": "sub-1788484513909",
+          "text": "第三遍整理筆記+回想",
+          "done": false
+        },
+        {
+          "id": "sub-1788484523493",
+          "text": "回家時練習考古題",
+          "done": false
+        }
+      ]
+    }
+  ],
+  "habits": [
+    {
+      "id": "habit-1788312270114",
+      "name": "早起",
+      "hasNote": true,
+      "isCounter": false,
+      "targetCount": null
+    },
+    {
+      "id": "habit-1788312282994",
+      "name": "喝水",
+      "hasNote": false,
+      "isCounter": true,
+      "targetCount": null
+    },
+    {
+      "id": "habit-1788312299738",
+      "name": "法條10條",
+      "hasNote": true,
+      "isCounter": false,
+      "targetCount": null
+    }
+  ],
+  "habitLogs": {
+    "2026-09-02": [
+      "habit-1788312270114"
+    ],
+    "2026-09-04": [
+      "habit-1788312270114"
+    ]
+  },
+  "habitNotes": {
+    "2026-09-02:habit-1788312270114": "05點20分",
+    "2026-09-04:habit-1788312270114": "05：50（好睏，賴床）"
+  },
+  "habitCounts": {
+    "2026-09-02": {
+      "habit-1788312282994": 3
+    }
+  },
+  "customCheckins": null,
+  "achievementStats": {
+    "totalCompletions": 1,
+    "totalQuizCorrect": 0,
+    "totalQuizSessions": 0
+  },
+  "unlockedBadges": null,
+  "vouchers": null
+}
