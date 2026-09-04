@@ -43,26 +43,9 @@
     position: relative;
   }
 
-  /* ---------- 桌面／大螢幕：手機外框效果 ----------
-     手機上完全不受影響（邊到邊、可以捲動）。
-     螢幕夠寬時，改成置中的卡片，兩側背景用漸層色塊填滿，避免看起來空空的。
-     .app 上的 transform 會讓裡面所有 position:fixed 的全螢幕畫面（測驗、時間軸、抽屜選單…）
-     被限制在這張卡片範圍內，而不是蓋滿整個桌面視窗。 */
-  @media (min-width: 640px){
-    body {
-      background: linear-gradient(160deg, #1B2A4A 0%, #2E3F63 55%, #101A30 100%);
-      display: flex; align-items: center; justify-content: center;
-      padding: 36px 16px;
-    }
-    .app {
-      height: min(900px, 92vh);
-      min-height: 0;
-      border-radius: 32px;
-      box-shadow: 0 40px 100px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
-      overflow-y: auto; overflow-x: hidden;
-      transform: translateZ(0);
-      -webkit-overflow-scrolling: touch;
-    }
+  /* ---------- 較寬螢幕：內容區域稍微加寬，背景維持跟App一樣的淺色，不做花俏效果 ---------- */
+  @media (min-width: 900px){
+    .app { max-width: 640px; }
   }
 
   /* ---------- Brand strip ---------- */
