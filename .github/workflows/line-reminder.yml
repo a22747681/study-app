@@ -1,0 +1,17 @@
+name: 每日LINE提醒
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # UTC 22:00 = 台灣時間早上 06:00
+  workflow_dispatch:        # 讓你可以手動測試觸發
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 發送LINE提醒訊息
+        run: |
+          curl -X POST https://api.line.me/v2/bot/message/broadcast \
+            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"messages":[{"type":"text","text":"該打開讀書App了"}]}'
