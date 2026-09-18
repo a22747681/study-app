@@ -1,0 +1,64 @@
+name: 每日開啟檢查
+
+on:
+  repository_dispatch:
+    types: [check-daily-ping]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 檢查今天有沒有打開App
+        run: |
+          node -e "
+          const https = require('https');
+          function req(options, body) {
+            return new Promise((resolve, reject) => {
+              const r = https.request(options, res => {
+                let data = '';
+                res.on('data', d => data += d);
+                res.on('end', () => resolve({ status: res.statusCode, body: data }));
+              });
+              r.on('error', reject);
+              if (body) r.write(body);
+              r.end();
+            });
+          }
+          (async () => {
+            const gistId = process.env.GIST_ID;
+            const githubToken = process.env.GIST_TOKEN;
+            const lineToken = process.env.LINE_TOKEN;
+
+            const gistRes = await req({
+              hostname: 'api.github.com',
+              path: '/gists/' + gistId,
+              method: 'GET',
+              headers: { 'Authorization': 'token ' + githubToken, 'Accept': 'application/vnd.github+json', 'User-Agent': 'daily-ping-check' }
+            });
+            const gistData = JSON.parse(gistRes.body);
+            const file = gistData.files['study-app-cloud-backup.json'];
+            let content = {};
+            try { content = JSON.parse(file.content); } catch(e) {}
+
+            const now = new Date();
+            const tw = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+            const todayKey = tw.toISOString().slice(0, 10);
+
+            const pinged = content.dailyPing && content.dailyPing[todayKey];
+            if (!pinged) {
+              await req({
+                hostname: 'api.line.me',
+                path: '/v2/bot/message/broadcast',
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + lineToken, 'Content-Type': 'application/json', 'User-Agent': 'daily-ping-check' }
+              }, JSON.stringify({ messages: [{ type: 'text', text: '妳今天沒有打開讀書App，妳欠約定的機構這筆錢，現在就去匯款。' }] }));
+              console.log('Sent failure notice');
+            } else {
+              console.log('Already pinged today, no notice sent');
+            }
+          })();
+          "
+        env:
+          GIST_ID: \${{ secrets.GIST_ID }}
+          GIST_TOKEN: \${{ secrets.GIST_TOKEN }}
+          LINE_TOKEN: \${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
