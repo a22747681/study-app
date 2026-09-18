@@ -1,13 +1,6 @@
 name: LINE 讀書提醒
 
 on:
-  schedule:
-    - cron: '0 22 * * *'
-    - cron: '0 1 * * *'
-    - cron: '0 4 * * *'
-    - cron: '0 6 * * *'
-    - cron: '30 9 * * *'
-    - cron: '30 13 * * *'
   workflow_dispatch:
 
 jobs:
