@@ -5461,6 +5461,7 @@ const CHECKIN_PRESETS = [
 
 const TIMED_ACTIVITIES = [
   { key:'study', icon:'📖', label:'讀書' },
+  { key:'work', icon:'💼', label:'工作' },
   { key:'exercise', icon:'🏃', label:'運動' },
   { key:'tv', icon:'📺', label:'看電視/動漫', locked:true },
   { key:'meal', icon:'🍚', label:'吃飯' },
@@ -6171,6 +6172,22 @@ async function pushToCloudSync(){
   status.textContent = '上傳中…';
   try {
     const data = await collectBackupData();
+    // 先讀出雲端現有內容，把「只存在雲端、本機沒有」的欄位（例如每日開啟紀錄、LINE收件匣）保留下來，
+    // 不然整份覆蓋上去會把這些欄位洗掉
+    try {
+      const getRes = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+        headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json' }
+      });
+      if(getRes.ok){
+        const gistJson = await getRes.json();
+        const existingFile = gistJson.files && gistJson.files[GITHUB_GIST_FILENAME];
+        if(existingFile){
+          const existingData = JSON.parse(existingFile.content);
+          if(existingData.dailyPing) data.dailyPing = existingData.dailyPing;
+          if(existingData.lineInbox) data.lineInbox = existingData.lineInbox;
+        }
+      }
+    } catch(e){}
     const res = await fetch(`https://api.github.com/gists/${config.gistId}`, {
       method: 'PATCH',
       headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json' },
@@ -6181,6 +6198,35 @@ async function pushToCloudSync(){
     status.textContent = `已上傳到雲端（${dayCount} 天時間軸），現在可以到其他裝置按「⬇ 從雲端下載」`;
   } catch(e){
     status.textContent = '上傳失敗：' + e.message;
+  }
+}
+
+/* 每次打開App時，安靜地在雲端記一筆「今天有打開」，供每日檢查排程判斷。
+   完全不影響畫面、不用使用者做任何事；沒設定雲端同步時直接跳過，不報錯。 */
+async function pingDailyOpen(){
+  try {
+    const config = await loadGithubSyncConfig();
+    if(!config) return;
+    const today = todayKey();
+    const getRes = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!getRes.ok) return;
+    const gistJson = await getRes.json();
+    const file = gistJson.files && gistJson.files[GITHUB_GIST_FILENAME];
+    if(!file) return;
+    let data;
+    try { data = JSON.parse(file.content); } catch(e){ data = {}; }
+    if(!data.dailyPing) data.dailyPing = {};
+    if(data.dailyPing[today]) return; // 今天已經記錄過，不用重複寫入，省流量
+    data.dailyPing[today] = Date.now();
+    await fetch(`https://api.github.com/gists/${config.gistId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: { [GITHUB_GIST_FILENAME]: { content: JSON.stringify(data, null, 2) } } })
+    });
+  } catch(e){
+    // 靜默失敗，不影響正常使用
   }
 }
 
@@ -7200,6 +7246,7 @@ renderDayLabel();
 renderRealStreak();
 renderAchievementsEntry();
 renderRoutinePromptWidget();
+pingDailyOpen(); // 安靜記錄「今天有打開App」，供每日檢查排程使用，不影響畫面
 setInterval(renderRoutinePromptWidget, 5 * 60 * 1000); // 每5分鐘重新檢查一次，App開著沒關也會自動跳出新的提問
 loadPersonalCards().then(updateDeckMenuSub);
 /* ---------- 待辦事項（到期日／優先度） ---------- */
