@@ -29,12 +29,20 @@ jobs:
             const githubToken = process.env.GIST_TOKEN;
             const lineToken = process.env.LINE_TOKEN;
 
+            console.log('GIST_ID exists:', !!gistId, 'length:', (gistId||'').length);
+            console.log('GIST_TOKEN exists:', !!githubToken, 'length:', (githubToken||'').length);
+
             const gistRes = await req({
               hostname: 'api.github.com',
               path: '/gists/' + gistId,
               method: 'GET',
               headers: { 'Authorization': 'token ' + githubToken, 'Accept': 'application/vnd.github+json', 'User-Agent': 'daily-ping-check' }
             });
+            console.log('Gist fetch status:', gistRes.status);
+            if (gistRes.status !== 200) {
+              console.log('Gist fetch body:', gistRes.body);
+              process.exit(1);
+            }
             const gistData = JSON.parse(gistRes.body);
             const file = gistData.files['study-app-cloud-backup.json'];
             let content = {};
