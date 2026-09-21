@@ -1702,7 +1702,11 @@
         <p style="font-size:12.5px; color:var(--ink-2); line-height:1.65; margin-bottom:6px;">
           已連接。這台裝置的 Gist ID（記得複製到你其他裝置貼上同一組）：
         </p>
-        <div id="cloudSyncGistIdDisplay" style="font-size:12px; font-weight:700; color:var(--accent); background:var(--bg); border-radius:10px; padding:9px 12px; margin-bottom:14px; word-break:break-all;"></div>
+        <div id="cloudSyncGistIdDisplay" style="font-size:12px; font-weight:700; color:var(--accent); background:var(--bg); border-radius:10px; padding:9px 12px; margin-bottom:10px; word-break:break-all;"></div>
+        <div id="cloudSyncTokenWrap" style="margin-bottom:14px;">
+          <div id="cloudSyncTokenDisplay" style="display:none; font-size:11px; font-weight:700; color:var(--ink-2); background:var(--bg); border-radius:10px; padding:9px 12px; margin-bottom:6px; word-break:break-all;"></div>
+          <button class="btn-primary" style="background:none; color:var(--ink-3); font-size:12px; padding:6px;" onclick="toggleCloudSyncTokenDisplay()" id="toggleTokenBtn">👁 顯示Token</button>
+        </div>
         <div style="display:flex; gap:8px; margin-bottom:10px;">
           <button class="btn-primary" style="flex:1;" onclick="pushToCloudSync()">⬆ 上傳到雲端</button>
           <button class="btn-primary" style="flex:1; background:var(--card); color:var(--accent); border:1px solid var(--line);" onclick="pullFromCloudSync()">⬇ 從雲端下載</button>
@@ -6110,9 +6114,29 @@ async function renderCloudSyncUI(){
     notConnected.style.display = 'none';
     connected.style.display = 'block';
     document.getElementById('cloudSyncGistIdDisplay').textContent = config.gistId;
+    // 每次重新打開這個畫面，Token 預設收起來，避免不小心被別人看到
+    document.getElementById('cloudSyncTokenDisplay').style.display = 'none';
+    document.getElementById('cloudSyncTokenDisplay').textContent = '';
+    document.getElementById('toggleTokenBtn').textContent = '👁 顯示Token';
   } else {
     notConnected.style.display = 'block';
     connected.style.display = 'none';
+  }
+}
+
+async function toggleCloudSyncTokenDisplay(){
+  const el = document.getElementById('cloudSyncTokenDisplay');
+  const btn = document.getElementById('toggleTokenBtn');
+  if(el.style.display === 'none'){
+    const config = await loadGithubSyncConfig();
+    if(!config){ return; }
+    el.textContent = config.token;
+    el.style.display = 'block';
+    btn.textContent = '🙈 隱藏Token';
+  } else {
+    el.style.display = 'none';
+    el.textContent = '';
+    btn.textContent = '👁 顯示Token';
   }
 }
 
