@@ -392,6 +392,18 @@
   .cal-day-empty { font-size: 13px; color: var(--ink-3); text-align: center; padding: 30px 0; }
 
   /* ---------- 成就畫面：分頁 ---------- */
+  .achieve-hero {
+    margin: 4px 16px 14px; padding: 20px 18px; border-radius: 20px;
+    background: linear-gradient(135deg, #5B3A8E, #2E1F4E); color: #fff; text-align: center;
+    box-shadow: 0 8px 24px rgba(46,31,78,.25);
+  }
+  .achieve-hero .ah-count { font-size: 30px; font-weight: 900; color: var(--gold); }
+  .achieve-hero .ah-count small { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.7); }
+  .achieve-hero .ah-label { font-size: 11.5px; color: rgba(255,255,255,.8); margin-top: 3px; font-weight: 700; }
+  .achieve-hero .ah-bar-track { height: 8px; border-radius: 100px; background: rgba(255,255,255,.18); margin-top: 14px; overflow: hidden; }
+  .achieve-hero .ah-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #F0DCA0); border-radius: 100px; transition: width .5s ease; }
+  .achieve-hero .ah-sub { font-size: 10.5px; color: rgba(255,255,255,.6); margin-top: 8px; }
+
   .achieve-tabs { display: flex; gap: 8px; padding: 14px 16px 4px; }
   .achieve-tabs button {
     flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--line);
@@ -403,17 +415,31 @@
   .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 4px; }
   .badge-cell {
     background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-    padding: 14px 8px; text-align: center;
+    padding: 14px 8px; text-align: center; position: relative; overflow: hidden;
   }
   .badge-cell.locked { opacity: .45; }
+  .badge-cell:not(.locked) {
+    border-color: var(--gold); background: linear-gradient(160deg, #FFFBF0, var(--card));
+    box-shadow: 0 3px 12px rgba(201,169,97,.28);
+  }
+  .badge-cell:not(.locked)::after {
+    content: '✓'; position: absolute; top: 6px; right: 8px; font-size: 10px; font-weight: 900;
+    color: #fff; background: var(--gold); width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
   .badge-cell .b-icon { font-size: 28px; margin-bottom: 6px; }
   .badge-cell.locked .b-icon { filter: grayscale(1); }
   .badge-cell .b-name { font-size: 11.5px; font-weight: 800; color: var(--ink); line-height: 1.4; }
   .badge-cell .b-req { font-size: 10px; color: var(--ink-3); margin-top: 4px; line-height: 1.4; }
 
   .voucher-item {
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    background: var(--card); border: 1.5px dashed var(--line); border-radius: 16px;
     padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+    position: relative;
+  }
+  .voucher-item:not(.used) {
+    border-color: var(--gold); background: linear-gradient(135deg, #FFF9EC, var(--card));
+    box-shadow: 0 3px 12px rgba(201,169,97,.2);
   }
   .voucher-item.used { opacity: .45; }
   .voucher-item .v-icon { font-size: 24px; flex-shrink: 0; }
@@ -830,6 +856,18 @@
   }
   .checkin-toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 
+  .quote-toast {
+    position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%) translateY(20px);
+    max-width: 320px; width: calc(100% - 48px);
+    background: linear-gradient(135deg, #1B2A4A, #2E1F4E); color: #fff;
+    padding: 16px 18px; border-radius: 16px; z-index: 92; opacity: 0; pointer-events: none;
+    transition: all .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .quote-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .quote-toast .qt-icon { font-size: 22px; flex-shrink: 0; }
+  .quote-toast .qt-text { font-size: 13px; font-weight: 700; line-height: 1.6; }
+
   /* ---------- Timeline log screen ---------- */
   .timelog {
     position: fixed; inset: 0; background: var(--bg);
@@ -1073,6 +1111,7 @@
     <div class="drawer-item minor" onclick="openHabits()"><div class="ic">🔥</div><div class="txt"><div class="t1">習慣打卡</div><div class="t2" id="habitsMenuSub">自訂清單＋連續天數</div></div></div>
     <div class="drawer-item minor" onclick="openAchievements()"><div class="ic">🏆</div><div class="txt"><div class="t1">成就與獎勵</div><div class="t2">徽章收藏牆・娛樂兌換券</div></div></div>
     <div class="drawer-item minor" onclick="openCustomCheckinManager()"><div class="ic">🛠️</div><div class="txt"><div class="t1">自訂打卡按鈕</div><div class="t2">新增專屬於你的快速打卡</div></div></div>
+    <div class="drawer-item minor" onclick="openCustomQuoteManager()"><div class="ic">💬</div><div class="txt"><div class="t1">自訂激勵台詞</div><div class="t2">打卡時可能跳出的句子</div></div></div>
     <div class="drawer-item minor" onclick="openRoutineCheckpoints()"><div class="ic">⏰</div><div class="txt"><div class="t1">例行提問設定</div><div class="t2">開App時主動問幾點做了什麼</div></div></div>
 
     <div class="drawer-section-label">其他</div>
@@ -1102,6 +1141,10 @@
   </div>
 </div>
 <div class="checkin-toast" id="checkinToast"></div>
+<div class="quote-toast" id="quoteToast">
+  <div class="qt-icon" id="quoteToastIcon"></div>
+  <div class="qt-text" id="quoteToastText"></div>
+</div>
 
 <!-- 里程碑驚喜彈窗 -->
 <div class="celebrate-overlay" id="celebrateOverlay" onclick="closeCelebrate()">
@@ -1392,6 +1435,7 @@
     <button onclick="closeAchievements()">←</button>
     <div class="ttl">成就與獎勵</div>
   </div>
+  <div class="achieve-hero" id="achieveHero"></div>
   <div class="achieve-tabs">
     <button id="achieveTabBadgesBtn" class="active" onclick="switchAchieveTab('badges')">🏅 徽章牆</button>
     <button id="achieveTabVouchersBtn" onclick="switchAchieveTab('vouchers')">🎟️ 兌換券</button>
@@ -1482,6 +1526,37 @@
     <input type="text" id="ccLabelInput" placeholder="例如：背單字">
   </div>
   <button class="btn-primary" onclick="saveNewCustomCheckin()">儲存按鈕</button>
+</div>
+
+<!-- 自訂激勵台詞管理畫面 -->
+<div class="timelog" id="customQuoteView">
+  <div class="deck-top">
+    <button onclick="closeCustomQuoteManager()">←</button>
+    <div class="ttl">自訂激勵台詞</div>
+    <button class="checkin-btn" onclick="openAddCustomQuote()" style="padding:7px 11px; font-size:12px;">＋ 新增</button>
+  </div>
+  <div style="padding:14px 16px 0; max-width:480px; margin:0 auto; width:100%; box-sizing:border-box; font-size:12.5px; color:var(--ink-3); line-height:1.6;">
+    這裡新增的句子，會跟原本內建的一起，在你每次打卡時隨機跳出一句。
+  </div>
+  <div class="deck-body" id="customQuoteBody" style="align-items:stretch; padding-top:14px;"></div>
+</div>
+
+<!-- 新增自訂台詞選單 -->
+<div class="checkin-scrim" id="addCustomQuoteScrim" onclick="closeAddCustomQuote()"></div>
+<div class="checkin-sheet" id="addCustomQuoteSheet">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+    <h3>新增激勵台詞</h3>
+    <button onclick="closeAddCustomQuote()" style="background:none; border:none; font-size:22px; color:var(--ink-3); line-height:1; width:44px; height:44px; display:flex; align-items:center; justify-content:center; margin:-10px -10px 0 0; flex-shrink:0;">✕</button>
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:12px;">
+    <label>圖示（一個emoji，選填）</label>
+    <input type="text" id="cqIconInput" placeholder="例如：🔥" maxlength="4">
+  </div>
+  <div class="edit-sheet-field" style="margin-bottom:16px;">
+    <label>台詞內容</label>
+    <input type="text" id="cqTextInput" placeholder="例如：今天也要贏過昨天的自己">
+  </div>
+  <button class="btn-primary" onclick="saveNewCustomQuote()">儲存台詞</button>
 </div>
 
 <!-- 例行提問設定畫面 -->
@@ -2367,6 +2442,24 @@ const QUIZ_BANKS = {
         why: '最高法院111年度台上字第2344號判決：資訊隱私權保障人民決定是否揭露其個人資料、及在何種範圍內、於何時、以何種方式、向何人揭露之決定權，並保障對個人資料之知悉與控制權及更正權，惟此保障並非絕對。搜尋引擎業者運用演算法對公開網頁進行搜尋、建立排列索引，屬商業上意見表達，應受言論自由之保障；惟因此提高個人隱私權受侵害之可能性，故仍有依個資法相關規定，規範蒐集、處理及利用個人資料之必要，須綜合權衡兩者。',
         distinguish: '此題容易走向兩個極端：一是認為搜尋引擎「只是技術服務」不受言論自由保障，應照單全收移除請求；二是認為個資一旦公開就永久不受保護。實務見解採取的是「權衡」立場——搜尋引擎之檢索服務受言論自由保障，同時當事人之資訊隱私權（含更生後不被持續揭露之利益）也應受保護，須依個案綜合判斷，並非一律移除或一律不移除。',
         law: [{ art:'民法 195 條第 1 項', text:'不法侵害他人之身體、健康、名譽、自由、信用、隱私、貞操，或不法侵害其他人格法益而情節重大者，被害人雖非財產上之損害，亦得請求賠償相當之金額。' }]
+      },
+      {
+        q: '甲因乙之過失侵權行為受有損害，甲於知悉損害及乙為賠償義務人後，遲遲未向乙請求賠償。下列敘述何者正確？',
+        tag: '侵權行為請求權時效（§197 v. §125）',
+        options: ['甲得於知悉損害及賠償義務人時起15年內請求，適用民法第125條一般時效', '甲之請求權自知悉損害及賠償義務人時起，2年間不行使而消滅，不適用第125條的15年', '甲之請求權一律自侵權行為發生時起15年間不行使而消滅', '甲得選擇適用2年或15年，以對自己有利者為準'],
+        correct: 1,
+        why: '民法第197條第1項規定：因侵權行為所生之損害賠償請求權，自請求權人知有損害及賠償義務人時起，二年間不行使而消滅，自有侵權行為時起，逾十年者亦同。這是民法第125條「請求權，因15年間不行使而消滅」之特別規定，依特別規定優先於普通規定的原則，侵權行為損害賠償請求權應優先適用第197條的2年／10年雙軌時效，不適用第125條的15年。',
+        distinguish: '這是很典型的「原則v.特別規定」陷阱：民法第125條的15年是一般請求權消滅時效的「原則」，很多人準備考試時把15年當成預設值背起來，一遇到侵權行為這種「有特別規定」的情況，就忘記要優先適用特別規定，直接套用原則性的15年，導致答錯。判斷邏輯是：先問「這個請求權有沒有特別規定？」有特別規定就優先適用特別規定的期間，不會回頭適用第125條。除了侵權行為（§197），常見的其他特別時效規定還有承攬瑕疵擔保請求權（§514，依標的物種類為1年或5年）、買賣物之瑕疵擔保請求權（§365，6個月）、旅遊營業人之損害賠償請求權（§514-12，1年），都不適用15年。',
+        law: [{ art:'民法 197 條 第 1 項', text:'因侵權行為所生之損害賠償請求權，自請求權人知有損害及賠償義務人時起，二年間不行使而消滅，自有侵權行為時起，逾十年者亦同。' }, { art:'民法 125 條', text:'請求權，因十五年間不行使而消滅。但法律所定期間較短者，依其規定。' }]
+      },
+      {
+        q: '甲無法律上原因受有利益，致乙受損害，乙依民法第179條規定請求甲返還不當得利。關於此請求權之消滅時效，下列敘述何者正確？',
+        tag: '不當得利返還請求權之時效',
+        options: ['民法就不當得利返還請求權設有特別規定，一律為5年', '民法就不當得利返還請求權未設特別規定，依第125條，原則為15年', '不當得利返還請求權之時效與侵權行為相同，為2年', '不當得利返還請求權沒有時效限制，得隨時請求'],
+        correct: 1,
+        why: '最高法院99年度台上字第339號民事判決：關於不當得利請求權之消滅時效，民法未設有特別明定，其期間應依民法第125條之規定為15年，並自請求權可行使時起算。也就是說，不當得利返還請求權本身並沒有像侵權行為（§197）那樣的特別時效規定，因此回歸適用第125條的一般時效15年。',
+        distinguish: '容易誤以為不當得利跟第126條的「5年」定期給付債權時效有關，把兩者搞混。第126條的5年，適用對象是利息、紅利、租金、贍養費、退職金等「定期給付債權」，跟一般不當得利是不同的請求權類型。但有一個進階例外要注意：如果不當得利返還的內容，性質上等同於「相當於租金」的定期利益（例如無權占用他人土地所生之相當於租金之不當得利），實務上有見解認為應類推適用第126條的5年時效，而非一般的15年——這是個案類型的例外，不是不當得利的通則，一般不當得利請求權仍以15年為原則。',
+        law: [{ art:'民法 179 條', text:'無法律上之原因而受利益，致他人受損害者，應返還其利益。雖有法律上之原因，而其後已不存在者，亦同。' }, { art:'民法 126 條', text:'利息、紅利、租金、贍養費、退職金及其他一年或不及一年之定期給付債權，其各期給付請求權，因五年間不行使而消滅。' }]
       },
     ]
   },
@@ -5442,7 +5535,43 @@ async function addLogEntry(entry){
   entries.sort((a,b) => normEntry(a).startTs - normEntry(b).startTs);
   await saveTodayLog(entries);
   renderHomeTimelineSummary();
+  if(entry.type === 'manual') showMotivationalQuote();
   return entries;
+}
+
+/* 每次打卡跳出的激勵台詞——原創文字，呼應航海王／哈利波特／鬼滅之刃的精神與意象，
+   不是直接引用原作台詞（避免版權問題），單純借用氛圍打氣。 */
+const MOTIVATION_QUOTES = [
+  { icon:'🏴‍☠️', text:'偉大航道上，沒有不辛苦的船員。' },
+  { icon:'🏴‍☠️', text:'夥伴在下一個島等妳，先把這一步走完。' },
+  { icon:'🏴‍☠️', text:'成為某個領域的王，就從今天這一步開始。' },
+  { icon:'🏴‍☠️', text:'夢想不會嘲笑堅持的人。' },
+  { icon:'🏴‍☠️', text:'橡皮筋拉久了才有彈性，妳的實力也是。' },
+  { icon:'🏴‍☠️', text:'航海圖是自己畫出來的，不是等來的。' },
+  { icon:'🪄', text:'魔法來自持續的練習，不是天賦。' },
+  { icon:'🪄', text:'選擇比出身更重要，妳選擇了現在打開這個App。' },
+  { icon:'🪄', text:'這是屬於妳的舉杖時刻。' },
+  { icon:'🪄', text:'黑魔法防禦術要靠自己一遍一遍練。' },
+  { icon:'🪄', text:'貓頭鷹已經把提醒送到了，剩下的是妳的事。' },
+  { icon:'🪄', text:'考驗一個人的不是天分，是選擇。' },
+  { icon:'⚔️', text:'全集中，把這一題呼吸過去。' },
+  { icon:'⚔️', text:'呼吸法練久了會變成本能，讀書也是。' },
+  { icon:'⚔️', text:'不是天賦讓人前進，是咬牙撐過的每一天。' },
+  { icon:'⚔️', text:'千錘百鍊才有現在的實力，妳的努力也在累積。' },
+  { icon:'⚔️', text:'能撐到現在的人，已經比大多數人強韌。' },
+  { icon:'⚔️', text:'今天的呼吸，決定明天的極限。' },
+];
+let quoteToastTimer = null;
+async function showMotivationalQuote(){
+  const custom = await loadCustomQuotes();
+  const pool = MOTIVATION_QUOTES.concat(custom);
+  const q = pool[Math.floor(Math.random() * pool.length)];
+  document.getElementById('quoteToastIcon').textContent = q.icon;
+  document.getElementById('quoteToastText').textContent = q.text;
+  const t = document.getElementById('quoteToast');
+  t.classList.add('show');
+  clearTimeout(quoteToastTimer);
+  quoteToastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
 /* 正規化：把舊格式（ts/meta）跟新格式（startTs/endTs/detail）統一成同一種結構讀取 */
@@ -6007,7 +6136,7 @@ async function collectBackupData(){
     wrongAnswers: null, streakShields: null, seenStreakMilestones: null,
     todos: null, habits: null, habitLogs: null, habitNotes: null, habitCounts: null, customCheckins: null,
     achievementStats: null, unlockedBadges: null, vouchers: null,
-    routineCheckpoints: null, routineLogs: null
+    routineCheckpoints: null, routineLogs: null, customQuotes: null
   };
   try {
     const listResult = await window.storage.list('timelog:', false);
@@ -6019,7 +6148,7 @@ async function collectBackupData(){
       } catch(e){}
     }
   } catch(e){}
-  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs'];
+  const singleKeys = ['activeTimers', 'personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs', 'customQuotes'];
   for(const key of singleKeys){
     try {
       const r = await window.storage.get(key, false);
@@ -6061,7 +6190,7 @@ async function applyImportedData(text){
     try { await window.storage.set('activeTimers', JSON.stringify(data.activeTimers), false); } catch(e){}
     activeTimers = data.activeTimers;
   }
-  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs'];
+  const singleKeys = ['personalFlashcards', 'personalNotes', 'personalEssays', 'wrongAnswers', 'streakShields', 'seenStreakMilestones', 'todos', 'habits', 'habitLogs', 'habitNotes', 'habitCounts', 'customCheckins', 'achievementStats', 'unlockedBadges', 'vouchers', 'routineCheckpoints', 'routineLogs', 'customQuotes'];
   let restoredExtras = [];
   for(const key of singleKeys){
     if(data[key] !== null && data[key] !== undefined){
@@ -6875,9 +7004,9 @@ async function renderSubjects(){
 const OVERLAY_IDS_BY_PRIORITY = [
   'quiz', 'session',
   'essayResultView', 'essayWriteView', 'essayListView',
-  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'routineView', 'linksView',
+  'pomodoroView', 'deckView', 'notesView', 'subjectsView', 'diagnosisView', 'todosView', 'habitsView', 'achievementsView', 'customCheckinView', 'customQuoteView', 'routineView', 'linksView',
   'timelog', 'backupView', 'quizPicker',
-  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'postponeSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addRoutineSheet', 'answerRoutineSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
+  'editEntrySheet', 'checkinSheet', 'addNoteSheet', 'addTodoSheet', 'todoCompletionNoteSheet', 'addSubtaskSheet', 'postponeSheet', 'addHabitSheet', 'habitNoteSheet', 'addCustomCheckinSheet', 'addCustomQuoteSheet', 'addRoutineSheet', 'answerRoutineSheet', 'addFreeEntrySheet', 'lawSubjectSheet', 'addLinkSheet',
   'drawer'
 ];
 const OVERLAY_SCRIM_MAP = {
@@ -6890,6 +7019,7 @@ const OVERLAY_SCRIM_MAP = {
   addSubtaskSheet: 'addSubtaskScrim',
   postponeSheet: 'postponeScrim',
   addCustomCheckinSheet: 'addCustomCheckinScrim',
+  addCustomQuoteSheet: 'addCustomQuoteScrim',
   addRoutineSheet: 'addRoutineScrim',
   answerRoutineSheet: 'answerRoutineScrim',
   addFreeEntrySheet: 'addFreeEntryScrim',
@@ -7105,6 +7235,32 @@ function closeCelebrate(){
   document.getElementById('celebrateOverlay').classList.remove('show');
 }
 
+/* ---------- 每日達標慶祝：時間軸滿門檻筆數時跳出，一天只跳一次 ---------- */
+const DAILY_GOAL_THRESHOLD = 8;
+async function checkDailyGoalCelebration(count){
+  if(count < DAILY_GOAL_THRESHOLD) return;
+  const today = todayKey();
+  try {
+    const r = await window.storage.get('dailyGoalCelebratedDate', false);
+    if(r && r.value === today) return; // 今天已經跳過了，不重複顯示
+  } catch(e){}
+  try { await window.storage.set('dailyGoalCelebratedDate', today, false); } catch(e){}
+  celebrateDailyGoal(count);
+}
+function celebrateDailyGoal(count){
+  document.getElementById('celebrateEmoji').textContent = '🎯';
+  document.getElementById('celebrateTitle').textContent = '今天達標了！';
+  document.getElementById('celebrateSub').textContent = `時間軸已經 ${count} 筆，超過門檻 ${DAILY_GOAL_THRESHOLD} 筆，今天不用付錢了`;
+  const wrap = document.getElementById('celebrateConfetti');
+  wrap.innerHTML = Array.from({ length: 20 }, () => {
+    const left = Math.random() * 100;
+    const delay = Math.random() * 0.6;
+    const emoji = CONFETTI_EMOJI[Math.floor(Math.random() * CONFETTI_EMOJI.length)];
+    return `<span class="celebrate-confetti" style="left:${left}%; animation-delay:${delay}s;">${emoji}</span>`;
+  }).join('');
+  document.getElementById('celebrateOverlay').classList.add('show');
+}
+
 /* =======================================================================
    成就與獎勵系統：徽章收藏牆（哈利波特／航海王主題）＋娛樂兌換券
    觸發來源：連續打卡天數、待辦與習慣累積完成數、測驗累計答對題數。
@@ -7215,6 +7371,7 @@ async function checkBadgeUnlocks(currentStreak){
     await saveUnlockedBadges(unlocked);
     for(const b of newlyUnlocked) await grantVoucher();
     renderAchievementsEntry();
+    renderAchieveHero();
     celebrateMilestone(`🏅 解鎖徽章：${newlyUnlocked[0].icon} ${newlyUnlocked[0].name}`);
   }
 }
@@ -7231,10 +7388,27 @@ let achieveTab = 'badges';
 async function openAchievements(){
   document.getElementById('achievementsView').classList.add('open');
   closeDrawer();
+  await renderAchieveHero();
   await renderAchievementsBody();
 }
 function closeAchievements(){
   document.getElementById('achievementsView').classList.remove('open');
+}
+async function renderAchieveHero(){
+  const hero = document.getElementById('achieveHero');
+  if(!hero) return;
+  const unlocked = await loadUnlockedBadges();
+  const vouchers = await loadVouchers();
+  const total = ACHIEVEMENT_BADGES.length;
+  const unlockedCount = unlocked.length;
+  const pct = total ? Math.round((unlockedCount / total) * 100) : 0;
+  const unusedVouchers = vouchers.filter(v => !v.used).length;
+  hero.innerHTML = `
+    <div class="ah-count">${unlockedCount}<small> / ${total} 徽章已解鎖</small></div>
+    <div class="ah-bar-track"><div class="ah-bar-fill" style="width:${pct}%;"></div></div>
+    <div class="ah-label">🎟️ ${unusedVouchers} 張兌換券還沒用</div>
+    <div class="ah-sub">連續打卡・待辦習慣・測驗答對，三條路都在計分</div>
+  `;
 }
 function switchAchieveTab(tab){
   achieveTab = tab;
@@ -7294,6 +7468,7 @@ async function redeemVoucher(id){
   await saveVouchers(list);
   await renderAchievementsBody();
   renderAchievementsEntry();
+  renderAchieveHero();
   showCheckinToast('兌換成功，去享受吧！');
 }
 
@@ -7945,6 +8120,70 @@ async function renderCustomCheckinManager(){
   `).join('');
 }
 
+/* ---------- 自訂激勵台詞：使用者可以自己新增，跟內建的一起隨機出現 ---------- */
+async function loadCustomQuotes(){
+  try {
+    const r = await window.storage.get('customQuotes', false);
+    return r ? JSON.parse(r.value) : [];
+  } catch(e){
+    return [];
+  }
+}
+async function saveCustomQuotes(list){
+  try { await window.storage.set('customQuotes', JSON.stringify(list), false); } catch(e){}
+}
+async function openCustomQuoteManager(){
+  document.getElementById('customQuoteView').classList.add('open');
+  closeDrawer();
+  await renderCustomQuoteManager();
+}
+function closeCustomQuoteManager(){
+  document.getElementById('customQuoteView').classList.remove('open');
+}
+function openAddCustomQuote(){
+  document.getElementById('cqIconInput').value = '';
+  document.getElementById('cqTextInput').value = '';
+  document.getElementById('addCustomQuoteSheet').classList.add('open');
+  document.getElementById('addCustomQuoteScrim').classList.add('open');
+}
+function closeAddCustomQuote(){
+  document.getElementById('addCustomQuoteSheet').classList.remove('open');
+  document.getElementById('addCustomQuoteScrim').classList.remove('open');
+}
+async function saveNewCustomQuote(){
+  const icon = document.getElementById('cqIconInput').value.trim() || '💬';
+  const text = document.getElementById('cqTextInput').value.trim();
+  if(!text){
+    showCheckinToast('台詞內容不能空白');
+    return;
+  }
+  const list = await loadCustomQuotes();
+  list.push({ id: 'cq-' + Date.now(), icon, text });
+  await saveCustomQuotes(list);
+  closeAddCustomQuote();
+  showCheckinToast('台詞已新增');
+  await renderCustomQuoteManager();
+}
+async function deleteCustomQuote(id){
+  const list = await loadCustomQuotes();
+  await saveCustomQuotes(list.filter(q => q.id !== id));
+  await renderCustomQuoteManager();
+}
+async function renderCustomQuoteManager(){
+  const list = await loadCustomQuotes();
+  const body = document.getElementById('customQuoteBody');
+  if(!list.length){
+    body.innerHTML = `<div class="deck-empty"><div class="big">💬</div>還沒有自訂台詞<br>點右上角「＋ 新增」寫一句你自己的激勵語</div>`;
+    return;
+  }
+  body.innerHTML = list.map(q => `
+    <div class="custom-checkin-row">
+      <div class="cc-label">${q.icon} ${q.text}</div>
+      <button class="cc-delete" onclick="deleteCustomQuote('${q.id}')">🗑</button>
+    </div>
+  `).join('');
+}
+
 /* =======================================================================
    例行提問：開 App 時主動問「幾點做了什麼」，不用自己點打卡選項目。
    使用者自訂想被詢問的事項＋大概的時間範圍，時間到了但今天還沒記錄時，
@@ -8437,19 +8676,24 @@ async function loadLogForDate(dateKey){
    如果目前時間軸畫面停在月曆分頁且選的是今天，順便刷新月曆跟當天清單 */
 async function renderHomeTimelineSummary(){
   const el = document.getElementById('miniTodayCount');
+  let todayCount = 0;
   if(el){
     try {
       const raw = await loadTodayLog();
-      el.textContent = `今天 ${raw.length} 筆`;
+      todayCount = raw.length;
+      el.textContent = `今天 ${todayCount} 筆`;
     } catch(e){
       el.textContent = '今天 0 筆';
     }
+  } else {
+    try { todayCount = (await loadTodayLog()).length; } catch(e){}
   }
   if(typeof calSelectedDate !== 'undefined' && calSelectedDate === todayKey()){
     if(document.getElementById('calGrid')) await renderCalendar();
     if(document.getElementById('calDayEntries')) await renderCalDayEntries();
   }
   syncTodayEntryCount(); // 不用 await，安靜在背景同步就好，不卡畫面
+  checkDailyGoalCelebration(todayCount);
 }
 
 async function renderMiniTodoColumn(){
