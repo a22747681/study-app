@@ -6209,6 +6209,7 @@ async function pushToCloudSync(){
           const existingData = JSON.parse(existingFile.content);
           if(existingData.dailyPing) data.dailyPing = existingData.dailyPing;
           if(existingData.lineInbox) data.lineInbox = existingData.lineInbox;
+          if(existingData.dailyEntryCount) data.dailyEntryCount = existingData.dailyEntryCount;
         }
       }
     } catch(e){}
@@ -6244,6 +6245,37 @@ async function pingDailyOpen(){
     if(!data.dailyPing) data.dailyPing = {};
     if(data.dailyPing[today]) return; // 今天已經記錄過，不用重複寫入，省流量
     data.dailyPing[today] = Date.now();
+    await fetch(`https://api.github.com/gists/${config.gistId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: { [GITHUB_GIST_FILENAME]: { content: JSON.stringify(data, null, 2) } } })
+    });
+  } catch(e){
+    // 靜默失敗，不影響正常使用
+  }
+}
+
+/* 每次時間軸有異動（打卡、編輯、刪除）時，把「今天目前的時間軸筆數」同步到雲端，
+   供每日檢查排程判斷「今天有沒有超過N筆」，不用手動按上傳。 */
+async function syncTodayEntryCount(){
+  try {
+    const config = await loadGithubSyncConfig();
+    if(!config) return;
+    const raw = await loadTodayLog();
+    const count = raw.length;
+    const today = todayKey();
+    const getRes = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!getRes.ok) return;
+    const gistJson = await getRes.json();
+    const file = gistJson.files && gistJson.files[GITHUB_GIST_FILENAME];
+    if(!file) return;
+    let data;
+    try { data = JSON.parse(file.content); } catch(e){ data = {}; }
+    if(!data.dailyEntryCount) data.dailyEntryCount = {};
+    if(data.dailyEntryCount[today] === count) return; // 筆數沒變化就不用重新寫入，省流量
+    data.dailyEntryCount[today] = count;
     await fetch(`https://api.github.com/gists/${config.gistId}`, {
       method: 'PATCH',
       headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
@@ -8417,6 +8449,7 @@ async function renderHomeTimelineSummary(){
     if(document.getElementById('calGrid')) await renderCalendar();
     if(document.getElementById('calDayEntries')) await renderCalDayEntries();
   }
+  syncTodayEntryCount(); // 不用 await，安靜在背景同步就好，不卡畫面
 }
 
 async function renderMiniTodoColumn(){
